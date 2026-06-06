@@ -1,4 +1,4 @@
-﻿# Tiêu chí 3 — Chức năng Hệ thống & Xử lý Nghiệp vụ POS
+# Tiêu chí 3 — Chức năng Hệ thống & Xử lý Nghiệp vụ POS
 
 > **Điểm tối đa:** 2.0 | **Mục tiêu:** Xuất sắc (100%)
 
@@ -306,6 +306,28 @@ export class SocketGateway implements OnGatewayInit {
 | `OCCUPIED` | 🔴 Đỏ | Đang có khách, có order active |
 | `RESERVED` | 🟡 Vàng | Được đặt trước, chưa đến giờ |
 | `CLEANING` | 🔵 Xanh dương | Khách vừa rời, đang dọn bàn |
+
+### 2.5 Nghiệp vụ Chuyển bàn & Gộp bàn (Move & Merge Tables)
+
+Trong thực tế nhà hàng, khách hàng thường xuyên có nhu cầu đổi chỗ hoặc nhóm bạn đến sau muốn ngồi chung bàn. Hệ thống hỗ trợ xử lý mượt mà các tình huống này:
+
+**1. Chuyển bàn (Move Table):**
+- **Trigger:** Khách từ Bàn A1 (OCCUPIED) muốn chuyển sang Bàn B2 (AVAILABLE).
+- **Action:** Thu ngân/Phục vụ chọn "Chuyển bàn" → Chọn bàn đích B2.
+- **System:**
+  - Cập nhật `tableId` của Order từ A1 sang B2.
+  - Cập nhật trạng thái Bàn A1 → `CLEANING` (để dọn dẹp) hoặc `AVAILABLE`.
+  - Cập nhật trạng thái Bàn B2 → `OCCUPIED`.
+  - Emit Socket để cập nhật lại giao diện KDS cho bếp (nếu muốn) và các POS khác.
+
+**2. Gộp bàn (Merge Tables):**
+- **Trigger:** Khách ở Bàn A1 và Bàn A2 muốn ngồi chung và tính chung 1 hóa đơn.
+- **Action:** Chọn "Gộp bàn" → Chọn gộp A2 vào A1 (A1 là bàn chính).
+- **System:**
+  - Chuyển toàn bộ `order_items` của Order ở bàn A2 sang Order ở bàn A1.
+  - Tính toán lại tổng tiền (`subtotal`) cho Order A1.
+  - Hủy bỏ (Cancel) Order cũ của bàn A2 với lý do "MERGED".
+  - Bàn A2 → `CLEANING` hoặc `AVAILABLE`.
 
 ---
 
@@ -798,7 +820,25 @@ export class PaymentsService {
 }
 ```
 
-### 5.4 Bảng trạng thái hóa đơn
+### 5.4 Nghiệp vụ Tách Hóa Đơn (Split Bill)
+
+Nghiệp vụ tách bill (Split Bill) là tính năng bắt buộc phải có khi một nhóm khách ăn chung nhưng muốn thanh toán riêng phần của từng người.
+
+**Hai phương thức tách hóa đơn chính:**
+
+1. **Tách chia đều (Split Evenly):**
+   - Áp dụng khi nhóm bạn muốn chia đều tổng hóa đơn thành N phần bằng nhau (AA).
+   - *Logic:* Từ 1 Order cha, sinh ra N Invoice con. Mỗi Invoice con có giá trị `total = Order.total / N`. Khi tất cả N Invoice con đều báo `PAID` thì Order cha mới chuyển sang `COMPLETED`.
+
+2. **Tách theo món (Split by Items):**
+   - Áp dụng khi khách nào ăn món nào thì tự trả tiền món đó.
+   - *Trải nghiệm người dùng:* Màn hình thu ngân sẽ hiển thị giao diện kéo thả (Drag & Drop). Thu ngân chọn "Tạo Hóa đơn 1" → Kéo ly Cà phê và Bánh mì vào; "Tạo Hóa đơn 2" → Kéo Trà sữa vào.
+   - *Logic hệ thống:* 
+     - Nhóm lại các `order_items` và tạo các Invoice con tương ứng.
+     - Hệ thống tự động chia lại thuế VAT và Discount (nếu có) theo tỷ lệ phần trăm tiền món trên tổng tiền.
+     - Đảm bảo tính toàn vẹn: Tổng số lượng món và tổng tiền của các Invoice con **phải bằng chính xác 100%** Order gốc.
+
+### 5.5 Bảng trạng thái hóa đơn
 
 | Trạng thái | Mô tả | Chuyển tiếp |
 |-----------|-------|-------------|
