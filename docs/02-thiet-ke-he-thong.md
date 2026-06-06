@@ -1,4 +1,4 @@
-# 📐 Tài Liệu Thiết Kế Hệ Thống — RestoPOS
+﻿# 📐 Tài Liệu Thiết Kế Hệ Thống — RestoPOS
 
 > **Phiên bản:** 1.0.0 | **Ngày cập nhật:** 06/06/2026  
 > **Nhóm:** CT07 | **Môn học:** Công nghệ phần mềm
@@ -1589,3 +1589,4 @@ Kiến trúc **Layered (N-tier)** được chọn vì:
 
 *Tài liệu này là một phần của bộ tài liệu đồ án RestoPOS - CT07.*  
 *Xem thêm: `01-tong-quan-du-an.md` | `03-ke-hoach-phat-trien.md`*
+

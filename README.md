@@ -1,13 +1,13 @@
-<div align="center">
+﻿<div align="center">
   <img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/store.svg" alt="RestoPOS Logo" width="120"/>
-  <h1>🍽️ RestoPOS — Hệ thống POS Nhà hàng / Quán cà phê</h1>
-  <p><strong>Dự án Đồ án Công nghệ Phần mềm — Nhóm CT07</strong></p>
+  <h1>🍽️ RestoPOS — Hệ thống POS Nhà hàng</h1>
+  <p><strong>Dự án Đồ án Công nghệ Phần mềm</strong></p>
 </div>
 
 ---
 
 ## 📖 Giới thiệu
-**RestoPOS** là một hệ thống Quản lý Điểm bán hàng (Point of Sale) toàn diện, được thiết kế chuyên biệt cho mô hình nhà hàng và quán cà phê. Hệ thống giải quyết các bài toán thực tế như: order gọi món thời gian thực, quản lý sơ đồ bàn, tích hợp hiển thị màn hình bếp (KDS), quản lý tồn kho nguyên liệu, thanh toán QR tự động và báo cáo doanh thu chi tiết.
+**RestoPOS** là một hệ thống Quản lý Điểm bán hàng (Point of Sale) toàn diện, được thiết kế chuyên biệt cho mô hình nhà hàng và nhà hàng. Hệ thống giải quyết các bài toán thực tế như: order gọi món thời gian thực, quản lý sơ đồ bàn, tích hợp hiển thị màn hình bếp (KDS), quản lý tồn kho nguyên liệu, thanh toán QR tự động và báo cáo doanh thu chi tiết.
 
 Dự án áp dụng kiến trúc Event-Driven kết hợp với Realtime WebSocket để mang lại trải nghiệm mượt mà, đồng bộ lập tức giữa nhân viên phục vụ, thu ngân và bếp.
 
@@ -93,5 +93,6 @@ Chi tiết toàn bộ tài liệu thiết kế, phân tích và hướng dẫn �
 
 ---
 <p align="center">
-  <i>Được thiết kế và xây dựng bằng tất cả nhiệt huyết của Nhóm CT07 ❤️</i>
+  <i>Được thiết kế và xây dựng bằng tất cả nhiệt huyết của Cá nhân ❤️</i>
 </p>
+

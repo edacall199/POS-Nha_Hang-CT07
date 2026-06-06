@@ -1,4 +1,4 @@
-# 🚀 Tiêu Chí 9: Tính Năng Nâng Cao & API/AI
+﻿# 🚀 Tiêu Chí 9: Tính Năng Nâng Cao & API/AI
 
 > **Điểm tối đa:** 0.5 điểm  
 > **Hệ thống:** RestoPOS – Phần mềm quản lý nhà hàng  
@@ -1056,3 +1056,4 @@ function getTimeOfDay(): string {
 ---
 
 > 💡 **Lưu ý tích hợp:** Tất cả API key của bên thứ ba (OpenAI, Telegram, MoMo, VNPay) cần được lưu trong biến môi trường `.env` và không commit lên Git. Sử dụng sandbox/test mode khi phát triển để tránh phát sinh chi phí thực tế.
+

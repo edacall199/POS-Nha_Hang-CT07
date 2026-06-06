@@ -1,4 +1,4 @@
-# 🗄️ Tiêu Chí 5: Cơ Sở Dữ Liệu, Validation & Bảo Mật
+﻿# 🗄️ Tiêu Chí 5: Cơ Sở Dữ Liệu, Validation & Bảo Mật
 
 > **Điểm tối đa:** 1.0 điểm  
 > **Hệ thống:** RestoPOS – Phần mềm quản lý nhà hàng  
@@ -842,3 +842,4 @@ app.use(helmet({
 ---
 
 > 📌 **Lưu ý:** Tất cả các secret key (JWT_SECRET, DB_PASSWORD...) phải được lưu trong `.env` và KHÔNG commit lên Git. Sử dụng `.env.example` làm template.
+

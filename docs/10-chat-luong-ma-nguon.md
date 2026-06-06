@@ -275,15 +275,13 @@ jobs:
 
 ---
 
-## 6. Lịch sử commit thể hiện đóng góp nhóm
+## 6. Quản lý tiến độ cá nhân
 
-| Thành viên | Commit count | Modules chính |
-|-----------|-------------|---------------|
-| Thành viên A | ~40 commits | Backend API, Socket.IO, BullMQ |
-| Thành viên B | ~35 commits | Frontend UI, Zustand stores |
-| Thành viên C | ~25 commits | Database schema, Prisma migrations |
-| Thành viên D | ~20 commits | Docker, CI/CD, Nginx |
-| Thành viên E | ~15 commits | Docs, Testing, Seed data |
+Dự án được thực hiện cá nhân với tiến độ được quản lý chặt chẽ qua hệ thống Git.
+
+- Phân chia các nhánh tính năng (`feature/`) rõ ràng và độc lập.
+- Có log commit chi tiết theo từng tính năng, module hoàn thiện (Backend API, Frontend UI, Database schema, DevOps).
+- Commit đều đặn mỗi ngày làm việc để track quá trình code.
 
 > **Xem lịch sử commit**: `git log --oneline --all --graph`
 
@@ -311,3 +309,4 @@ docker-compose exec backend npx prisma db seed
 # API:      http://localhost:4000
 # DB GUI:   http://localhost:5555 (Prisma Studio)
 ```
+

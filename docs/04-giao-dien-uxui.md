@@ -1,4 +1,4 @@
-# Tiêu chí 4 — Giao diện & Trải nghiệm Người dùng (UI/UX)
+﻿# Tiêu chí 4 — Giao diện & Trải nghiệm Người dùng (UI/UX)
 > **Điểm tối đa:** 1.0 | **Mục tiêu:** Xuất sắc (100%)
 
 ---
@@ -138,3 +138,4 @@
 - **Loading states**: Skeleton loading thay vì spinner trống
 - **Empty states**: Màn hình trống có hướng dẫn hành động tiếp theo
 - **Confirmation dialogs**: Hành động không thể hoàn tác luôn có confirm
+

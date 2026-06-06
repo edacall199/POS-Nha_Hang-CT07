@@ -1,4 +1,4 @@
-# 🚀 Tiêu Chí 7: Triển Khai & Demo Sản Phẩm
+﻿# 🚀 Tiêu Chí 7: Triển Khai & Demo Sản Phẩm
 
 > **Điểm tối đa:** 1.0 điểm  
 > **Hệ thống:** RestoPOS – Phần mềm quản lý nhà hàng  
@@ -815,3 +815,4 @@ jobs:
 ---
 
 > 🎯 **Mục tiêu demo:** Hoàn thành toàn bộ checklist trên trong vòng 10 phút để chứng minh hệ thống hoạt động end-to-end đầy đủ.
+

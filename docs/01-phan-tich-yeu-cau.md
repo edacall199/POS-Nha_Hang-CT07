@@ -1,11 +1,11 @@
-# Tiêu chí 1 — Phân tích Bài toán & Yêu cầu Hệ thống
+﻿# Tiêu chí 1 — Phân tích Bài toán & Yêu cầu Hệ thống
 > **Điểm tối đa:** 1.0 | **Mục tiêu:** Xuất sắc (100%)
 
 ---
 
 ## 1. Bối cảnh & Bài toán thực tế
 
-Mô hình kinh doanh nhà hàng / quán cà phê tại Việt Nam hiện đang đối mặt với các vấn đề:
+Mô hình kinh doanh nhà hàng tại Việt Nam hiện đang đối mặt với các vấn đề:
 
 - **Quản lý order thủ công**: Nhân viên ghi tay → dễ nhầm, chậm, khó theo dõi
 - **Không có realtime giữa bàn và bếp**: Bếp không biết trạng thái, khách chờ lâu
@@ -188,3 +188,4 @@ Cashier đăng nhập → Mở ca (nhập tiền quỹ đầu ca)
 → Hệ thống tính: tiền thực thu = tổng tiền mặt - quỹ đầu ca
 → In báo cáo ca
 ```
+

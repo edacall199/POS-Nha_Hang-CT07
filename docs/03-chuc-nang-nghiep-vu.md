@@ -1,4 +1,4 @@
-# Tiêu chí 3 — Chức năng Hệ thống & Xử lý Nghiệp vụ POS
+﻿# Tiêu chí 3 — Chức năng Hệ thống & Xử lý Nghiệp vụ POS
 
 > **Điểm tối đa:** 2.0 | **Mục tiêu:** Xuất sắc (100%)
 
@@ -1697,3 +1697,4 @@ export class ShiftsService {
 ---
 
 *Tài liệu được tạo cho đồ án POS Nhà Hàng — CT07 | RestoPOS v1.0*
+

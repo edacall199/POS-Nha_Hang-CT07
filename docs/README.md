@@ -1,6 +1,6 @@
-# 📋 Tài liệu Đồ án CNPM — RestoPOS
-> Hệ thống quản lý POS Nhà hàng / Quán cà phê  
-> Nhóm CT07 | Môn: Công nghệ Phần mềm
+﻿# 📋 Tài liệu Đồ án CNPM — RestoPOS
+> Hệ thống quản lý POS Nhà hàng  
+> Cá nhân | Môn: Công nghệ Phần mềm
 
 ---
 
@@ -43,10 +43,11 @@
 
 | Mục | Chi tiết |
 |-----|---------|
-| **Tên đồ án** | Phân tích, thiết kế, xây dựng và triển khai website POS cho nhà hàng / quán cà phê |
+| **Tên đồ án** | Phân tích, thiết kế, xây dựng và triển khai website POS cho nhà hàng |
 | **Nhóm** | CT07 |
 | **Repository** | https://github.com/edacall199/POS-Nha_Hang-CT07 |
 | **Công nghệ Backend** | Node.js 22 + Express 5 + TypeScript + Prisma 6 + PostgreSQL 16 |
 | **Công nghệ Frontend** | Next.js 15 App Router + shadcn/ui + Tailwind CSS v4 |
 | **Realtime** | Socket.IO |
 | **Triển khai** | Docker Compose + GitHub Actions CI/CD |
+

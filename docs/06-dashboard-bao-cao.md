@@ -1,4 +1,4 @@
-# 📊 Tiêu Chí 6: Dashboard, Thống Kê & Báo Cáo
+﻿# 📊 Tiêu Chí 6: Dashboard, Thống Kê & Báo Cáo
 
 > **Điểm tối đa:** 0.75 điểm  
 > **Hệ thống:** RestoPOS – Phần mềm quản lý nhà hàng  
@@ -811,3 +811,4 @@ export const exportToExcel = (data: any[], sheetName: string, filename: string) 
 ---
 
 > 📌 **Lưu ý Performance:** Các query báo cáo phức tạp nên được cache bằng Redis với TTL 5-10 phút để tránh load nặng cho database trong giờ cao điểm.
+

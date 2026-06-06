@@ -80,15 +80,10 @@
 - 9.3. Tài khoản demo & dữ liệu mẫu
 - 9.4. Hướng dẫn demo luồng nghiệp vụ
 
-### Chương 10: Phân công Công việc
+### Chương 10: Quá trình Thực hiện
 
-| Thành viên | Vai trò | Công việc |
-|-----------|---------|----------|
-| (Tên) | Backend Lead | API, Socket.IO, BullMQ jobs |
-| (Tên) | Frontend Lead | Next.js, UI components, stores |
-| (Tên) | Database | Prisma schema, migrations, seed |
-| (Tên) | DevOps | Docker, CI/CD, Nginx |
-| (Tên) | Docs & QA | Tài liệu, kiểm thử |
+- Cá nhân tự phân tích, thiết kế và phát triển toàn bộ hệ thống (Fullstack).
+- Tự triển khai CI/CD, setup Docker và viết toàn bộ tài liệu kỹ thuật.
 
 ### Chương 11: Kết quả & Hạn chế
 - 11.1. Kết quả đạt được (checklist tính năng)
@@ -101,7 +96,7 @@
 
 | Slide | Nội dung |
 |-------|---------|
-| 1 | Trang bìa: Tên đồ án, nhóm, GVHD |
+| 1 | Trang bìa: Tên đồ án, sinh viên thực hiện, GVHD |
 | 2 | Mục lục |
 | 3-4 | Giới thiệu bài toán (thống kê thực tế nhà hàng VN) |
 | 5 | Mục tiêu & phạm vi hệ thống |
@@ -120,7 +115,7 @@
 | 21 | Tính năng nâng cao (VietQR, Telegram, PDF) |
 | 22 | Bảo mật (JWT flow, bcrypt, RBAC) |
 | 23 | Kiểm thử & kết quả |
-| 24 | Phân công & đóng góp (Git commits) |
+| 24 | Quá trình thực hiện & quản lý phiên bản |
 | 25 | Kết quả đạt được (checklist) |
 | 26 | Hạn chế & hướng phát triển |
 | 27 | Q&A |
@@ -143,3 +138,4 @@
 
 **Q: VietQR hoạt động thế nào?**
 > A: Khi khách chọn QR, hệ thống gọi VietQR API tạo QR với nội dung chuyển khoản duy nhất (mã hóa đơn). Đồng thời BullMQ queue một job polling mỗi 5 giây kiểm tra webhook. Khi nhận webhook báo đã nhận tiền, khớp với nội dung chuyển khoản → tự động cập nhật invoice PAID + bàn CLEANING.
+
