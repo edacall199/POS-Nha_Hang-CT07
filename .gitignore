@@ -1,0 +1,101 @@
+# ================================
+# Node.js
+# ================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn/cache
+.pnp.*
+
+# ================================
+# Build outputs
+# ================================
+dist/
+build/
+.next/
+out/
+
+# ================================
+# Environment variables (NEVER commit)
+# ================================
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.env.production
+*.env
+
+# ================================
+# Database
+# ================================
+*.sqlite
+*.db
+prisma/dev.db
+
+# ================================
+# Logs
+# ================================
+logs/
+*.log
+lerna-debug.log*
+
+# ================================
+# Testing
+# ================================
+coverage/
+.nyc_output/
+*.lcov
+
+# ================================
+# IDE & Editors
+# ================================
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# ================================
+# AI Agent Skills & Context
+# (Local only — không push lên repo)
+# ================================
+.claude/
+.cursor/
+.windsurf/
+.aider*
+.copilot/
+*.skill.md
+
+# ================================
+# Docker
+# ================================
+.docker/
+
+# ================================
+# Uploads & Media (dùng Cloudinary)
+# ================================
+uploads/
+public/uploads/
+
+# ================================
+# TypeScript
+# ================================
+*.tsbuildinfo
+
+# ================================
+# Prisma
+# ================================
+# Giữ lại migrations nhưng bỏ generated client
+node_modules/.prisma/
+
+# ================================
+# Misc
+# ================================
+.turbo/
+.cache/
+tmp/
+temp/
