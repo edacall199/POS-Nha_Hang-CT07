@@ -63,6 +63,7 @@ Thumbs.db
 # AI Agent Skills & Context
 # (Local only — không push lên repo)
 # ================================
+.skill/
 .claude/
 .cursor/
 .windsurf/
