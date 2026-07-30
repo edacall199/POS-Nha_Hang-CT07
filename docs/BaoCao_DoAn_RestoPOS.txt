@@ -1,0 +1,1273 @@
+LỜI CẢM ƠN
+
+Trong suốt quá trình thực hiện đồ án, em đã nhận được rất nhiều sự quan tâm, giúp đỡ và hướng dẫn tận tình từ quý thầy cô và bạn bè. Em xin bày tỏ lòng biết ơn sâu sắc đến:
+
+Trước hết, em xin gửi lời cảm ơn chân thành đến Ban Giám hiệu Trường Đại học Hùng Vương Thành phố Hồ Chí Minh, cùng toàn thể quý thầy cô Khoa Kỹ thuật - Công nghệ đã tạo điều kiện thuận lợi cho em trong suốt quá trình học tập và nghiên cứu tại trường.
+
+Đặc biệt, em xin gửi lời cảm ơn sâu sắc đến thầy/cô [                    ], người đã trực tiếp hướng dẫn em nghiên cứu đề tài "Phân tích, thiết kế, xây dựng và triển khai website POS cho nhà hàng" một cách rất nhiệt tình và tận tâm. Thầy/cô không chỉ cung cấp những lời khuyên quý giá, mà còn giúp em định hướng nghiên cứu một cách rõ ràng, khoa học và hợp lý. Sự kiên nhẫn, tâm huyết và sự hỗ trợ tận tình của thầy/cô là nguồn động viên lớn giúp em hoàn thành đồ án này.
+
+Mặc dù em đã cố gắng hết sức để hoàn thiện bài báo cáo, nhưng do sự hiểu biết còn hạn chế, bài báo cáo chắc chắn không thể tránh khỏi những thiếu sót. Em rất mong nhận được sự góp ý chân thành từ các thầy cô để bài báo cáo của em được hoàn thiện hơn nữa.
+
+Một lần nữa, em xin chân thành cảm ơn tất cả các thầy cô đã đồng hành và hỗ trợ em trong suốt quá trình thực hiện đồ án này.
+
+
+================================================================================
+
+
+LỜI CAM ĐOAN
+
+Em xin cam đoan rằng đề tài: "Phân tích, thiết kế, xây dựng và triển khai website POS cho nhà hàng (RestoPOS)" là công trình nghiên cứu độc lập của riêng em, được thực hiện dưới sự hướng dẫn của [                    ]. Không có bất kỳ sự sao chép nào từ nguồn khác.
+
+Nội dung báo cáo là kết quả của quá trình nỗ lực và làm việc chăm chỉ của em. Các số liệu và kết quả trình bày trong báo cáo đã được thu thập và sử dụng một cách trung thực. Nếu phát hiện có bất kỳ sự gian lận nào tôi xin hoàn toàn chịu trách nhiệm về nội dung Đồ án của mình. Trường Đại học Hùng Vương Thành phố Hồ Chí Minh không liên quan đến những vi phạm tác quyền, bản quyền do tôi gây ra trong quá trình thực hiện (nếu có).
+
+	TP.HCM, ngày ..... tháng ..... năm 2025
+	Người cam đoan
+
+
+
+	(                    )
+
+
+================================================================================
+
+
+MỤC LỤC
+
+Trang phụ bìa
+Lời cảm ơn
+Lời cam đoan
+Mục lục
+Danh mục các ký hiệu, các chữ viết tắt
+Danh mục các hình vẽ
+Danh mục các bảng biểu
+
+LỜI MỞ ĐẦU
+
+Chương 1 - TỔNG QUAN VỀ ĐỀ TÀI
+   1.1. Bối cảnh và bài toán thực tế
+   1.2. Mục tiêu nghiên cứu
+   1.3. Đối tượng và phạm vi nghiên cứu
+   1.4. Phương pháp nghiên cứu
+
+Chương 2 - PHÂN TÍCH YÊU CẦU HỆ THỐNG
+   2.1. Khảo sát và phân tích hiện trạng
+   2.2. Người dùng và vai trò (Actors)
+   2.3. Sơ đồ Use Case tổng quát
+   2.4. Yêu cầu chức năng
+   2.5. Yêu cầu phi chức năng
+   2.6. Luồng nghiệp vụ chính
+
+Chương 3 - THIẾT KẾ HỆ THỐNG
+   3.1. Kiến trúc hệ thống
+   3.2. Công nghệ sử dụng
+   3.3. Thiết kế cơ sở dữ liệu (ERD)
+   3.4. Chuẩn hóa dữ liệu
+   3.5. Thiết kế API RESTful
+   3.6. Thiết kế Backend
+   3.7. Thiết kế Frontend
+   3.8. Thiết kế luồng xử lý Realtime
+
+Chương 4 - XÂY DỰNG CÁC MODULE CHỨC NĂNG
+   4.1. Module Xác thực và Phân quyền (Auth & RBAC)
+   4.2. Module Quản lý Bàn (Table Management)
+   4.3. Module Quản lý Đơn hàng (Order Management)
+   4.4. Module Hiển thị Bếp (KDS - Kitchen Display System)
+   4.5. Module Thanh toán (Payment)
+   4.6. Module Quản lý Thực đơn (Menu Management)
+   4.7. Module Quản lý Kho và Nguyên liệu (Inventory)
+   4.8. Module Khách hàng và Tích điểm (CRM & Loyalty)
+   4.9. Module Ca làm việc (Shift Management)
+   4.10. Module Đặt bàn trước (Reservation)
+
+Chương 5 - CƠ SỞ DỮ LIỆU VÀ BẢO MẬT
+   5.1. Chi tiết các bảng cơ sở dữ liệu
+   5.2. Validation dữ liệu với Zod
+   5.3. Bảo mật hệ thống
+
+Chương 6 - TÍNH NĂNG NÂNG CAO VÀ TÍCH HỢP
+   6.1. Tích hợp VietQR
+   6.2. Xuất hóa đơn PDF
+   6.3. Dashboard và Báo cáo thống kê
+   6.4. Tích hợp Telegram Bot
+
+Chương 7 - TRIỂN KHAI VÀ HƯỚNG DẪN SỬ DỤNG
+   7.1. Yêu cầu hệ thống
+   7.2. Hướng dẫn cài đặt
+   7.3. Hướng dẫn sử dụng các chức năng chính
+
+Chương 8 - KẾT QUẢ VÀ ĐÁNH GIÁ
+   8.1. Kết quả đạt được
+   8.2. Giao diện hệ thống
+   8.3. Đánh giá hệ thống
+
+KẾT LUẬN VÀ KIẾN NGHỊ
+DANH MỤC TÀI LIỆU THAM KHẢO
+
+
+================================================================================
+
+
+DANH MỤC CÁC KÝ HIỆU VÀ TỪ VIẾT TẮT
+
+Viết tắt	Tiếng Anh	Tiếng Việt
+POS	Point of Sale	Hệ thống bán hàng
+KDS	Kitchen Display System	Hệ thống hiển thị bếp
+CRM	Customer Relationship Management	Quản lý quan hệ khách hàng
+RBAC	Role-Based Access Control	Phân quyền dựa trên vai trò
+ERD	Entity Relationship Diagram	Sơ đồ thực thể liên kết
+API	Application Programming Interface	Giao diện lập trình ứng dụng
+REST	Representational State Transfer	Kiến trúc truyền tải trạng thái
+JWT	JSON Web Token	Token xác thực dạng JSON
+ORM	Object-Relational Mapping	Ánh xạ đối tượng quan hệ
+CSDL	-	Cơ sở dữ liệu
+UI	User Interface	Giao diện người dùng
+UX	User Experience	Trải nghiệm người dùng
+CRUD	Create, Read, Update, Delete	Tạo, Đọc, Sửa, Xóa
+QR	Quick Response	Mã phản hồi nhanh
+SSR	Server-Side Rendering	Kết xuất phía máy chủ
+CSS	Cascading Style Sheets	Bảng định kiểu tầng
+HTML	HyperText Markup Language	Ngôn ngữ đánh dấu siêu văn bản
+SQL	Structured Query Language	Ngôn ngữ truy vấn có cấu trúc
+HTTP	HyperText Transfer Protocol	Giao thức truyền tải siêu văn bản
+CORS	Cross-Origin Resource Sharing	Chia sẻ tài nguyên nguồn chéo
+HTTPS	HTTP Secure	Giao thức truyền tải siêu văn bản bảo mật
+UUID	Universally Unique Identifier	Mã định danh duy nhất toàn cầu
+VAT	Value Added Tax	Thuế giá trị gia tăng
+PDF	Portable Document Format	Định dạng tài liệu di động
+
+
+================================================================================
+
+
+DANH MỤC CÁC HÌNH VẼ
+
+Hình 2.1 Sơ đồ Use Case tổng quát hệ thống RestoPOS
+Hình 2.2 Sơ đồ luồng nghiệp vụ Order - Bếp - Thanh toán
+Hình 3.1 Sơ đồ kiến trúc hệ thống 5 lớp (5-Layer Architecture)
+Hình 3.2 Sơ đồ triển khai (Deployment Diagram)
+Hình 3.3 Sơ đồ ERD - Thực thể liên kết cơ sở dữ liệu
+Hình 3.4 Sequence Diagram - Luồng xác thực đăng nhập
+Hình 3.5 Sequence Diagram - Luồng tạo Order và gửi xuống Bếp
+Hình 3.6 Sequence Diagram - Luồng thanh toán VietQR
+Hình 3.7 Sơ đồ cấu trúc thư mục Backend
+Hình 3.8 Sơ đồ cấu trúc thư mục Frontend
+Hình 3.9 Sơ đồ luồng xử lý Socket.IO Realtime
+Hình 4.1 Giao diện màn hình đăng nhập (Login)
+Hình 4.2 Giao diện Sơ đồ bàn (Table Map)
+Hình 4.3 Giao diện Gọi món (Order)
+Hình 4.4 Giao diện Hiển thị Bếp - KDS (Kitchen Display System)
+Hình 4.5 Giao diện Thanh toán và mã VietQR
+Hình 4.6 Giao diện Quản lý Thực đơn (Menu Management)
+Hình 4.7 Giao diện Quản lý Kho hàng (Inventory)
+Hình 4.8 Giao diện Quản lý Khách hàng (CRM)
+Hình 4.9 Giao diện Dashboard Thống kê doanh thu
+Hình 7.1 Giao diện tổng quan các màn hình chính của hệ thống
+
+
+================================================================================
+
+
+DANH MỤC CÁC BẢNG BIỂU
+
+Bảng 2.1 Ma trận Vai trò - Quyền hạn (RBAC Matrix)
+Bảng 2.2 Danh sách yêu cầu chức năng (FR-01 đến FR-54)
+Bảng 2.3 Danh sách yêu cầu phi chức năng
+Bảng 3.1 So sánh lý do chọn công nghệ
+Bảng 3.2 Danh sách các bảng cơ sở dữ liệu
+Bảng 3.3 Danh sách các API Endpoint chính
+Bảng 5.1 Chi tiết cấu trúc bảng users
+Bảng 5.2 Chi tiết cấu trúc bảng tables
+Bảng 5.3 Chi tiết cấu trúc bảng orders
+Bảng 5.4 Chi tiết cấu trúc bảng order_items
+Bảng 5.5 Chi tiết cấu trúc bảng payments
+Bảng 5.6 Chi tiết cấu trúc bảng menu_items
+Bảng 5.7 Chi tiết cấu trúc bảng ingredients
+Bảng 5.8 Chi tiết cấu trúc bảng recipes
+Bảng 5.9 Chi tiết cấu trúc bảng customers
+Bảng 8.1 Bảng đánh giá kết quả hệ thống
+
+
+================================================================================
+
+
+LỜI MỞ ĐẦU
+
+1. Lý do chọn đề tài
+
+Trong bối cảnh nền kinh tế Việt Nam ngày càng phát triển, ngành dịch vụ ăn uống (F&B - Food and Beverage) đang trở thành một trong những lĩnh vực kinh doanh sôi động và đầy tiềm năng nhất. Theo thống kê, Việt Nam hiện có hàng trăm nghìn nhà hàng, quán ăn và chuỗi cà phê trải dài trên khắp cả nước. Tuy nhiên, phần lớn các cơ sở kinh doanh nhỏ và vừa vẫn đang vận hành theo phương pháp truyền thống: ghi order bằng giấy, tính tiền thủ công, thiếu sự đồng bộ giữa bộ phận phục vụ và bếp, dẫn đến nhiều sai sót trong quá trình phục vụ khách hàng.
+
+Các vấn đề thường gặp bao gồm: sai sót khi ghi nhận order do viết tay khó đọc, chậm trễ trong việc truyền đạt thông tin giữa bộ phận thu ngân và bếp, khó khăn trong quản lý trạng thái bàn khi nhà hàng đông khách, thiếu hệ thống chăm sóc khách hàng thân thiết (CRM) và đặc biệt là không có khả năng theo dõi doanh thu, tồn kho theo thời gian thực.
+
+Với mong muốn ứng dụng những kiến thức đã được học tại trường và giải quyết những thách thức thực tế trên, em đã lựa chọn đề tài "Phân tích, thiết kế, xây dựng và triển khai website POS cho nhà hàng (RestoPOS)" nhằm xây dựng một hệ thống quản lý bán hàng hiện đại, đồng bộ hóa toàn bộ quy trình vận hành nhà hàng từ Thu ngân - Bếp - Quản lý trong thời gian thực (realtime).
+
+2. Lịch sử nghiên cứu
+
+Trên thế giới, các hệ thống POS đã được phát triển từ rất sớm, tiêu biểu như Square POS, Toast POS và Lightspeed. Tại Việt Nam, một số giải pháp nổi bật bao gồm KiotViet, iPOS và Sapo POS. Tuy nhiên, đa số các hệ thống này đều là phần mềm đóng gói thương mại với chi phí cao, khó tùy biến theo nhu cầu riêng biệt của từng nhà hàng, và đặc biệt thiếu khả năng đồng bộ thời gian thực (realtime) giữa các bộ phận trong nhà hàng.
+
+Đề tài này tiếp cận vấn đề từ góc độ xây dựng một hệ thống mã nguồn mở, sử dụng bộ công nghệ hiện đại nhất (Next.js, Node.js, TypeScript, PostgreSQL, Socket.IO) và tích hợp đầy đủ các chức năng mà một nhà hàng thực tế cần, bao gồm cả các tính năng nâng cao như thanh toán qua VietQR, hệ thống tích điểm khách hàng và màn hình hiển thị bếp (KDS).
+
+3. Mục đích nghiên cứu
+
+- Xây dựng hệ thống POS web-based quản lý toàn diện quy trình vận hành nhà hàng.
+- Đồng bộ hóa thời gian thực (realtime) giữa bộ phận Thu ngân (POS), bộ phận Bếp (KDS) và bộ phận Quản lý (Dashboard) thông qua công nghệ WebSocket.
+- Tối ưu hóa trải nghiệm khách hàng với hệ thống CRM tích điểm thân thiết, thanh toán đa kênh (tiền mặt, thẻ, VietQR) và quét mã QR tự động.
+- Hỗ trợ nghiệp vụ quản trị với Dashboard thống kê doanh thu trực quan, quản lý kho hàng dựa trên công thức chế biến (Recipe) và quản lý ca làm việc chuyên nghiệp.
+
+4. Đối tượng và phạm vi nghiên cứu
+
+Đối tượng nghiên cứu:
+- Quy trình vận hành và quản lý bán hàng tại nhà hàng, quán ăn.
+- Các công nghệ web hiện đại phục vụ cho việc phát triển ứng dụng thời gian thực.
+- Các phương thức thanh toán điện tử phổ biến tại Việt Nam.
+
+Phạm vi nghiên cứu:
+- Phân tích, thiết kế và xây dựng hệ thống POS dành cho nhà hàng quy mô vừa và nhỏ.
+- Hệ thống hỗ trợ tối thiểu 50 bàn, 200 món ăn và 10 nhân viên hoạt động đồng thời.
+- Tích hợp thanh toán VietQR, hệ thống tích điểm khách hàng, quản lý kho nguyên liệu và màn hình hiển thị bếp (KDS).
+
+5. Phương pháp nghiên cứu
+
+- Phương pháp phân tích yêu cầu: Khảo sát thực tế quy trình vận hành tại các nhà hàng, thu thập và phân tích yêu cầu hệ thống.
+- Phương pháp thiết kế hướng đối tượng: Sử dụng UML (Use Case Diagram, Sequence Diagram, ERD) để mô hình hóa hệ thống.
+- Phương pháp phát triển phần mềm Agile: Chia nhỏ dự án thành các Sprint, phát triển theo module và kiểm thử liên tục.
+- Phương pháp thực nghiệm: Xây dựng, triển khai và kiểm thử hệ thống trên môi trường thực tế.
+
+6. Nội dung đồ án
+
+Chương 1: Tổng quan về đề tài - Giới thiệu bối cảnh, bài toán thực tế và tổng quan về hệ thống POS cho nhà hàng.
+Chương 2: Phân tích yêu cầu hệ thống - Phân tích các vai trò người dùng, yêu cầu chức năng, phi chức năng và luồng nghiệp vụ.
+Chương 3: Thiết kế hệ thống - Thiết kế kiến trúc, cơ sở dữ liệu, API và giao diện người dùng.
+Chương 4: Xây dựng các module chức năng - Trình bày chi tiết việc xây dựng từng module nghiệp vụ.
+Chương 5: Cơ sở dữ liệu và bảo mật - Chi tiết schema CSDL, validation và các biện pháp bảo mật.
+Chương 6: Tính năng nâng cao và tích hợp - VietQR, PDF Invoice, Dashboard, Telegram Bot.
+Chương 7: Triển khai và hướng dẫn sử dụng - Hướng dẫn cài đặt, cấu hình và sử dụng hệ thống.
+Chương 8: Kết quả và đánh giá - Tổng kết kết quả đạt được và đánh giá hệ thống.
+Kết luận: Những kết luận chính và hướng phát triển tương lai.
+
+
+================================================================================
+
+
+CHƯƠNG 1 - TỔNG QUAN VỀ ĐỀ TÀI
+
+1.1. BỐI CẢNH VÀ BÀI TOÁN THỰC TẾ
+
+Ngành dịch vụ ăn uống (F&B) tại Việt Nam đang bước vào giai đoạn chuyển đổi số mạnh mẽ. Các nhà hàng ngày càng nhận thức được tầm quan trọng của việc số hóa quy trình vận hành để tăng hiệu suất, giảm sai sót và nâng cao trải nghiệm khách hàng. Tuy nhiên, phần lớn các giải pháp POS hiện có trên thị trường Việt Nam vẫn tồn tại nhiều hạn chế:
+
+Về mặt kỹ thuật:
+- Thiếu khả năng đồng bộ thời gian thực (realtime) giữa các bộ phận: khi thu ngân ghi nhận order, bếp phải chờ giấy in hoặc phải đến tận nơi để nhận thông tin.
+- Giao diện lỗi thời, không thân thiện với người dùng, đặc biệt trên các thiết bị cảm ứng và máy tính bảng.
+- Không hỗ trợ hoặc hỗ trợ hạn chế các phương thức thanh toán điện tử như QR Code ngân hàng.
+
+Về mặt nghiệp vụ:
+- Khó quản lý trạng thái bàn khi nhà hàng đông khách: bàn nào đang trống, bàn nào đang phục vụ, bàn nào đang dọn.
+- Thiếu hệ thống quản lý tồn kho tự động dựa trên công thức chế biến (Recipe), dẫn đến việc hết nguyên liệu mà không được cảnh báo trước.
+- Không có hệ thống CRM (Customer Relationship Management) để chăm sóc khách hàng thân thiết, tích điểm và khuyến mãi.
+
+Từ những thực trạng trên, đề tài "RestoPOS" ra đời nhằm xây dựng một hệ thống quản lý bán hàng nhà hàng toàn diện, hiện đại, đáp ứng được mọi nhu cầu vận hành của một nhà hàng quy mô vừa và nhỏ.
+
+1.2. MỤC TIÊU NGHIÊN CỨU
+
+Mục tiêu tổng quát:
+Xây dựng hệ thống POS web-based hoàn chỉnh, đồng bộ hóa realtime toàn bộ luồng vận hành nhà hàng từ khâu tiếp khách, gọi món, chế biến cho đến thanh toán và quản lý doanh thu.
+
+Mục tiêu cụ thể:
+- Xây dựng Sơ đồ bàn tương tác (Interactive Table Map) với cập nhật trạng thái realtime qua WebSocket, hỗ trợ chuyển bàn và gộp bàn linh hoạt.
+- Phát triển Màn hình hiển thị bếp (KDS - Kitchen Display System) dạng Kanban với thông báo âm thanh khi có order mới.
+- Tích hợp thanh toán đa kênh: tiền mặt (tự động tính tiền thừa), mã QR ngân hàng (VietQR), và thẻ.
+- Xây dựng hệ thống CRM tích điểm khách hàng thân thiết (10.000đ = 1 điểm, 1 điểm = 1.000đ khi đổi).
+- Phát triển module quản lý kho nguyên liệu tự động dựa trên công thức chế biến (Recipe), tự trừ kho khi bán hàng.
+- Xây dựng Dashboard thống kê doanh thu trực quan với biểu đồ, hỗ trợ quản lý ca làm việc và đối soát tiền mặt.
+
+1.3. ĐỐI TƯỢNG VÀ PHẠM VI NGHIÊN CỨU
+
+1.3.1. Đối tượng nghiên cứu
+- Quy trình vận hành và quản lý bán hàng tại nhà hàng, quán ăn quy mô vừa và nhỏ tại Việt Nam.
+- Bộ công nghệ web hiện đại: TypeScript, Next.js, Node.js, Express.js, Prisma ORM, PostgreSQL, Socket.IO.
+- Các phương thức thanh toán điện tử: VietQR (Napas 271), thanh toán thẻ.
+
+1.3.2. Phạm vi nghiên cứu
+- Phân tích, thiết kế kiến trúc hệ thống theo mô hình Client-Server phân tách Frontend và Backend.
+- Xây dựng 12 module chức năng chính bao gồm: Xác thực & Phân quyền, Quản lý bàn, Gọi món, Hiển thị bếp, Thanh toán, Quản lý thực đơn, Combo & Khuyến mãi, Kho & Nguyên liệu, Đặt bàn, Tích điểm, Ca làm việc, và Thống kê báo cáo.
+- Hệ thống hỗ trợ quy mô tối thiểu 50 bàn, 200 món ăn trong thực đơn và 10 nhân viên hoạt động đồng thời.
+
+1.4. PHƯƠNG PHÁP NGHIÊN CỨU
+
+1.4.1. Phương pháp phân tích yêu cầu
+Tiến hành khảo sát thực tế quy trình vận hành tại các nhà hàng, quán ăn. Thu thập và phân loại yêu cầu hệ thống thành yêu cầu chức năng (54 yêu cầu) và yêu cầu phi chức năng.
+
+1.4.2. Phương pháp thiết kế hướng đối tượng
+Sử dụng ngôn ngữ mô hình hóa thống nhất UML (Unified Modeling Language) để thiết kế hệ thống bao gồm: Use Case Diagram, Sequence Diagram, Entity Relationship Diagram (ERD) và Activity Diagram.
+
+1.4.3. Phương pháp phát triển phần mềm linh hoạt (Agile)
+Áp dụng mô hình Agile-Scrum, chia dự án thành các Sprint ngắn (2 tuần/sprint), phát triển tăng dần (incremental) theo từng module, kiểm thử liên tục và cải tiến dựa trên phản hồi.
+
+1.4.4. Phương pháp thực nghiệm
+Xây dựng, triển khai và kiểm thử hệ thống trên môi trường thực tế với dữ liệu mẫu (seed data) bao gồm 5 vai trò người dùng, 4 khu vực, 24 bàn, 3 danh mục và 14 món ăn. Thực hiện các kịch bản kiểm thử đầy đủ từ quy trình gọi món, nấu bếp, thanh toán cho đến chốt ca.
+
+
+================================================================================
+
+
+CHƯƠNG 2 - PHÂN TÍCH YÊU CẦU HỆ THỐNG
+
+2.1. KHẢO SÁT VÀ PHÂN TÍCH HIỆN TRẠNG
+
+Qua quá trình khảo sát thực tế tại các nhà hàng quy mô vừa và nhỏ, em nhận thấy quy trình vận hành điển hình bao gồm các khâu sau:
+- Tiếp khách và xếp bàn.
+- Ghi nhận order (gọi món).
+- Chuyển order xuống bếp.
+- Bếp chế biến và thông báo khi hoàn thành.
+- Phục vụ ra bàn.
+- Thanh toán và lưu hóa đơn.
+- Quản lý ca, đối soát doanh thu cuối ngày.
+
+Hầu hết các khâu trên vẫn đang được thực hiện bằng phương pháp thủ công (giấy, bảng trắng, Excel) hoặc sử dụng các phần mềm POS đơn giản thiếu tính đồng bộ. Điều này dẫn đến các vấn đề: sai sót order, chậm trễ phục vụ, khó kiểm soát doanh thu và không có cơ chế chăm sóc khách hàng.
+
+2.2. NGƯỜI DÙNG VÀ VAI TRÒ (ACTORS)
+
+Hệ thống RestoPOS xác định 5 vai trò người dùng (Actors) chính:
+
+a) Chủ nhà hàng (OWNER):
+- Toàn quyền truy cập mọi chức năng của hệ thống.
+- Xem tất cả báo cáo doanh thu, thống kê chi tiết.
+- Cấu hình hệ thống, quản lý nhân sự, phân quyền.
+
+b) Quản lý (MANAGER):
+- Quản lý thực đơn (thêm, sửa, xóa món ăn).
+- Quản lý lịch làm việc nhân viên.
+- Xem báo cáo ca, kiểm tra lịch sử nhập kho.
+- Phê duyệt các thao tác đặc biệt (hủy bill, giảm giá).
+
+c) Thu ngân (CASHIER):
+- Tạo order, gọi món cho khách.
+- Thực hiện thanh toán (tiền mặt, VietQR, thẻ).
+- Mở ca, chốt ca, khai báo tiền mặt đầu ngày.
+- Xem hóa đơn, in bill.
+
+d) Nhân viên bếp (KITCHEN):
+- Xem màn hình KDS (Kitchen Display System).
+- Cập nhật trạng thái từng món: Chờ làm -> Đang nấu -> Xong.
+- Nhận thông báo âm thanh khi có order mới.
+
+e) Phục vụ (WAITER):
+- Gọi món tại bàn cho khách.
+- Gửi order xuống bếp.
+- Xác nhận đã mang món ra cho khách.
+
+2.3. SƠ ĐỒ USE CASE TỔNG QUÁT
+
+Hệ thống được phân tích thành 12 nhóm Use Case chính tương ứng với 12 module chức năng:
+- UC01: Xác thực và Phân quyền (Authentication & Authorization)
+- UC02: Quản lý Bàn (Table Management)
+- UC03: Quản lý Order (Order Management)
+- UC04: Hiển thị Bếp (KDS)
+- UC05: Thanh toán (Payment)
+- UC06: Quản lý Thực đơn (Menu Management)
+- UC07: Combo và Khuyến mãi (Promotions)
+- UC08: Kho và Nguyên liệu (Inventory)
+- UC09: Đặt bàn (Reservation)
+- UC10: Tích điểm Khách hàng (Loyalty/CRM)
+- UC11: Ca làm việc (Shift Management)
+- UC12: Thống kê Báo cáo (Reports/Dashboard)
+
+(Sơ đồ Use Case chi tiết được trình bày trong Hình 2.1)
+
+2.4. YÊU CẦU CHỨC NĂNG
+
+Hệ thống được phân tích và xác định tổng cộng 54 yêu cầu chức năng (FR - Functional Requirement), được phân nhóm theo 12 module:
+
+Nhóm 1: Xác thực & Phân quyền (FR-01 đến FR-04)
+- FR-01: Hệ thống cho phép người dùng đăng nhập bằng email/mật khẩu.
+- FR-02: Hệ thống cho phép đăng xuất an toàn.
+- FR-03: Hệ thống bảo vệ API bằng JWT Access Token (hết hạn 15 phút) kết hợp Refresh Token (hết hạn 7 ngày).
+- FR-04: Hệ thống phân quyền truy cập dựa trên vai trò (RBAC) với 5 vai trò: Owner, Manager, Cashier, Kitchen, Waiter.
+
+Nhóm 2: Quản lý Bàn (FR-05 đến FR-08)
+- FR-05: Hiển thị sơ đồ bàn trực quan theo từng khu vực.
+- FR-06: Cập nhật trạng thái bàn realtime: Bàn trống (AVAILABLE), Đang phục vụ (OCCUPIED), Đã đặt (RESERVED), Đang dọn (CLEANING).
+- FR-07: Hỗ trợ chuyển bàn và gộp bàn linh hoạt.
+- FR-08: Thêm, sửa, xóa bàn và khu vực.
+
+Nhóm 3: Quản lý Order (FR-09 đến FR-13)
+- FR-09: Tạo order mới gắn với bàn, hỗ trợ loại "Ăn tại chỗ" (DINE_IN) và "Mang đi" (TAKE_AWAY).
+- FR-10: Thêm món vào order, kèm ghi chú đặc biệt (ít đá, nhiều đường, không hành,...).
+- FR-11: Trạng thái order tự động chuyển đổi: Chờ xử lý (PENDING) -> Đã gửi bếp (SENT) -> Đang nấu (PREPARING) -> Sẵn sàng (READY) -> Đã phục vụ (SERVED).
+- FR-12: Hiển thị thời gian chờ từ khi tạo order.
+- FR-13: Tự động tính tổng tiền = Tổng phụ + VAT 8% - Giảm giá.
+
+Nhóm 4: Hiển thị Bếp - KDS (FR-14 đến FR-17)
+- FR-14: Hiển thị danh sách ticket theo thứ tự thời gian trên giao diện Kanban 3 cột (Mới vào, Đang làm, Sẵn sàng).
+- FR-15: Phát âm thanh thông báo khi có ticket mới từ thu ngân.
+- FR-16: Theo dõi thời gian chế biến, đánh dấu trạng thái "Khẩn cấp" (Urgent) khi vượt quá 10 phút.
+- FR-17: Cho phép bếp cập nhật trạng thái từng món trong ticket.
+
+Nhóm 5: Thanh toán (FR-18 đến FR-25)
+- FR-18: Tự động tính tổng hóa đơn gồm: tổng phụ (subtotal) + VAT 8% - giảm giá.
+- FR-19: Hỗ trợ áp dụng voucher giảm giá.
+- FR-20: Hỗ trợ trừ điểm tích lũy của khách hàng thân thiết.
+- FR-21: Thanh toán tiền mặt với tự động tính tiền thừa.
+- FR-22: Thanh toán bằng mã VietQR động (mã QR ngân hàng tự sinh chính xác đến từng đồng).
+- FR-23: Hỗ trợ tách bill (chia đều hoặc chia theo món).
+- FR-24: In hóa đơn PDF.
+- FR-25: Gửi hóa đơn qua email cho khách hàng.
+
+Nhóm 6: Quản lý Thực đơn (FR-26 đến FR-30)
+- FR-26: Quản lý danh mục (Category) món ăn.
+- FR-27: CRUD (Thêm, Sửa, Xóa, Xem) món ăn với đầy đủ thông tin: tên, giá, mô tả, hình ảnh.
+- FR-28: Upload hình ảnh món ăn.
+- FR-29: Bật/tắt trạng thái món ăn (Còn/Hết).
+- FR-30: Thiết lập thời gian chế biến ước tính cho từng món.
+
+Nhóm 7: Kho và Nguyên liệu (FR-34 đến FR-38)
+- FR-34: Định nghĩa công thức chế biến (Recipe) cho từng món ăn, liên kết nguyên liệu thô.
+- FR-35: Tự động trừ kho nguyên liệu khi thanh toán hóa đơn (sử dụng Database Transaction).
+- FR-36: Cảnh báo khi tồn kho thấp dưới mức tối thiểu (minQuantity).
+- FR-37: Quản lý nhập kho: ghi nhận số lượng nhập, giá nhập, thời gian, nhân viên thực hiện.
+- FR-38: Tự động khóa (disable) món ăn khi nguyên liệu hết sạch.
+
+Nhóm 8: Tích điểm Khách hàng (FR-42 đến FR-46)
+- FR-42: Lưu thông tin khách hàng tự động dựa trên số điện thoại.
+- FR-43: Tích điểm thưởng: cứ 10.000đ chi tiêu = 1 điểm.
+- FR-44: Đổi điểm giảm giá: 1 điểm = 1.000đ trừ trực tiếp vào hóa đơn.
+- FR-45: Xử lý tích/trừ điểm bằng Database Transaction (Atomic) đảm bảo không sai lệch.
+- FR-46: Hiển thị lịch sử giao dịch và tổng chi tiêu tích lũy.
+
+Nhóm 9: Ca làm việc (FR-47 đến FR-49)
+- FR-47: Mở ca: Thu ngân khai báo số tiền mặt đầu ca (opening cash).
+- FR-48: Chốt ca: Hệ thống tự động tính tổng doanh thu, so sánh tiền mặt thực tế với hệ thống, xác định trạng thái Thừa (SURPLUS) / Thiếu (DEFICIT) / Cân bằng (BALANCED).
+- FR-49: Mọi hóa đơn đều gắn liền với ca làm việc (shift) để đối soát.
+
+Nhóm 10: Thống kê Báo cáo (FR-50 đến FR-54)
+- FR-50: Dashboard tổng quan: Doanh thu hôm nay, Doanh thu tháng, Số đơn hàng, Bàn đang phục vụ.
+- FR-51: Biểu đồ doanh thu theo ngày/tháng/năm.
+- FR-52: Biểu đồ top 10 món bán chạy nhất.
+- FR-53: Báo cáo theo bàn, theo nhân viên, theo phương thức thanh toán.
+- FR-54: Xuất báo cáo ra file Excel.
+
+2.5. YÊU CẦU PHI CHỨC NĂNG
+
+a) Hiệu năng (Performance):
+- API phản hồi dưới 500ms cho 95% request.
+- Độ trễ WebSocket dưới 100ms.
+- Cập nhật trạng thái bàn/order đồng bộ trong vòng 1 giây.
+
+b) Bảo mật (Security):
+- Mã hóa mật khẩu bằng bcrypt (12 salt rounds).
+- JWT Access Token (hết hạn 15 phút) + Refresh Token (hết hạn 7 ngày).
+- Rate Limiting: 200 request/15 phút cho API chung, 10 lần đăng nhập/15 phút.
+- HTTPS, CORS, Security Headers (Helmet).
+
+c) Khả dụng (Availability):
+- Uptime tối thiểu 99% trong giờ hoạt động (6h - 23h).
+- Hỗ trợ tối thiểu 50 bàn, 200 món ăn, 10 nhân viên đồng thời.
+
+d) Giao diện (Usability):
+- Responsive trên Desktop (1920x1080), Tablet (1024x768) và Mobile (390x844).
+- Hỗ trợ Dark Mode / Light Mode.
+- Touch-friendly: kích thước nút tối thiểu 44x44px.
+- Đạt chuẩn WCAG AA về độ tương phản.
+
+2.6. LUỒNG NGHIỆP VỤ CHÍNH
+
+Luồng nghiệp vụ chính của hệ thống RestoPOS diễn ra như sau:
+
+Bước 1 - Mở ca: Thu ngân đăng nhập, khai báo số tiền mặt đầu ca.
+Bước 2 - Tiếp khách: Phục vụ xếp bàn cho khách, trạng thái bàn chuyển từ "Trống" sang "Đang phục vụ".
+Bước 3 - Gọi món: Phục vụ/Thu ngân chọn bàn, thêm món vào order, ghi chú đặc biệt, xác nhận gửi xuống bếp.
+Bước 4 - Bếp nhận order: Màn hình KDS hiện ticket mới kèm âm thanh chuông. Bếp xác nhận đang nấu, sau đó báo hoàn thành.
+Bước 5 - Phục vụ: Trạng thái món chuyển sang "Sẵn sàng", phục vụ mang ra bàn và xác nhận.
+Bước 6 - Thanh toán: Thu ngân tính tiền, khách chọn phương thức thanh toán (tiền mặt / VietQR / thẻ). Hệ thống tự tích điểm cho khách hàng thân thiết, trừ tồn kho nguyên liệu.
+Bước 7 - Sau thanh toán: Bàn tự động chuyển sang trạng thái "Đang dọn" với đồng hồ đếm ngược 5 phút, hết thời gian sẽ tự chuyển về "Trống".
+Bước 8 - Chốt ca: Cuối ca, thu ngân chốt ca, hệ thống tự so sánh tiền mặt thực tế với doanh thu trên phần mềm.
+
+(Sơ đồ luồng nghiệp vụ được trình bày chi tiết trong Hình 2.2)
+
+
+================================================================================
+
+
+CHƯƠNG 3 - THIẾT KẾ HỆ THỐNG
+
+3.1. KIẾN TRÚC HỆ THỐNG
+
+Hệ thống RestoPOS được thiết kế theo mô hình kiến trúc phân lớp 5 tầng (5-Layer Architecture), phân tách rõ ràng trách nhiệm của từng lớp:
+
+Lớp 1 - Presentation Layer (Tầng trình diễn):
+- Công nghệ: Next.js 15 (App Router), React, shadcn/ui, TailwindCSS.
+- Nhiệm vụ: Hiển thị giao diện người dùng, xử lý tương tác, quản lý state phía client.
+
+Lớp 2 - Gateway Layer (Tầng cổng):
+- Công nghệ: Nginx Reverse Proxy.
+- Nhiệm vụ: Phân phối request, cân bằng tải, SSL termination, nén GZIP.
+
+Lớp 3 - Application Layer (Tầng ứng dụng):
+- Công nghệ: Express.js, Express Router, Zod Validator.
+- Nhiệm vụ: Định tuyến API, xác thực JWT, kiểm tra quyền, validation dữ liệu đầu vào.
+
+Lớp 4 - Business Layer (Tầng nghiệp vụ):
+- Công nghệ: TypeScript Services, Socket.IO.
+- Nhiệm vụ: Xử lý toàn bộ logic nghiệp vụ phức tạp (tính tiền, tích điểm, trừ kho, gộp bàn,...).
+
+Lớp 5 - Data Access Layer (Tầng truy cập dữ liệu):
+- Công nghệ: Prisma ORM, PostgreSQL.
+- Nhiệm vụ: Tương tác với CSDL, thực hiện CRUD, quản lý transaction, migration schema.
+
+(Sơ đồ kiến trúc hệ thống chi tiết được trình bày trong Hình 3.1)
+
+3.2. CÔNG NGHỆ SỬ DỤNG
+
+Bảng 3.1. So sánh và lý do chọn công nghệ
+
+a) Ngôn ngữ lập trình: TypeScript
+- Lý do: Kiểm tra kiểu dữ liệu tại thời điểm biên dịch (compile-time type checking), giảm thiểu lỗi runtime, tăng khả năng bảo trì mã nguồn. Sử dụng chung cho cả Frontend và Backend giúp đồng nhất codebase.
+
+b) Frontend Framework: Next.js 15 (App Router)
+- Lý do: Hỗ trợ Server-Side Rendering (SSR) giúp tải trang nhanh hơn, Server Components giúp giảm kích thước JavaScript gửi về client, App Router cho phép tổ chức route linh hoạt theo thư mục.
+
+c) Backend Framework: Node.js + Express.js
+- Lý do: Non-blocking I/O phù hợp cho ứng dụng realtime, hệ sinh thái npm phong phú, dễ tích hợp Socket.IO cho WebSocket.
+
+d) ORM: Prisma 6
+- Lý do: End-to-end type safety (tự sinh kiểu TypeScript từ schema), schema-first workflow trực quan, hỗ trợ migration, transaction và raw SQL khi cần.
+
+e) Cơ sở dữ liệu: PostgreSQL 16
+- Lý do: CSDL quan hệ mạnh mẽ, hỗ trợ JSON/JSONB, transaction ACID, hiệu năng cao với index và query optimizer tiên tiến.
+
+f) Realtime: Socket.IO
+- Lý do: Hỗ trợ WebSocket với fallback, room-based broadcasting, tự động reconnect, dễ tích hợp với Express.js.
+
+g) UI Framework: shadcn/ui + TailwindCSS
+- Lý do: Component library hiện đại, accessible (WCAG AA), tùy biến cao, không phụ thuộc runtime CSS.
+
+h) State Management: Zustand + TanStack Query (React Query)
+- Lý do: Zustand cho global state nhẹ và đơn giản. TanStack Query cho server state với caching, refetching, và optimistic updates.
+
+3.3. THIẾT KẾ CƠ SỞ DỮ LIỆU (ERD)
+
+Cơ sở dữ liệu được thiết kế bao gồm 16 bảng chính, được chuẩn hóa đến dạng chuẩn 3NF (Third Normal Form):
+
+Bảng 3.2. Danh sách các bảng cơ sở dữ liệu
+
+STT   Tên bảng          Mô tả
+1     roles              Vai trò và quyền hạn trong hệ thống
+2     users              Thông tin tài khoản nhân viên
+3     refresh_tokens     Token làm mới phiên đăng nhập
+4     zones              Khu vực trong nhà hàng (Tầng 1, Tầng 2, VIP,...)
+5     tables             Bàn ăn (số bàn, sức chứa, trạng thái, gộp bàn)
+6     categories         Danh mục món ăn (Khai vị, Món chính, Đồ uống,...)
+7     menu_items         Món ăn trong thực đơn (tên, giá, hình ảnh, giá vốn)
+8     ingredients        Nguyên liệu thô trong kho (tên, đơn vị, tồn kho, giá)
+9     recipes            Công thức chế biến (liên kết món ăn với nguyên liệu)
+10    inventory_logs     Lịch sử nhập/xuất kho
+11    work_shifts        Ca làm việc (tiền đầu ca, tiền cuối ca, trạng thái)
+12    orders             Đơn hàng (mã đơn, bàn, nhân viên, ca, tổng tiền)
+13    order_items        Chi tiết từng món trong đơn hàng
+14    payments           Thanh toán (phương thức, số tiền, tiền nhận, tiền thừa)
+15    reservations       Đặt bàn trước (tên khách, SĐT, số người, thời gian)
+16    customers          Khách hàng thân thiết (SĐT, tên, điểm, tổng chi tiêu)
+
+(Sơ đồ ERD đầy đủ được trình bày trong Hình 3.3)
+
+Các mối quan hệ chính:
+- roles (1) --- (N) users: Một vai trò có nhiều nhân viên.
+- zones (1) --- (N) tables: Một khu vực có nhiều bàn.
+- tables (1) --- (N) orders: Một bàn có nhiều đơn hàng.
+- orders (1) --- (N) order_items: Một đơn hàng có nhiều chi tiết món.
+- orders (1) --- (1) payments: Một đơn hàng có một thanh toán.
+- menu_items (1) --- (N) recipes: Một món ăn có nhiều công thức nguyên liệu.
+- ingredients (1) --- (N) recipes: Một nguyên liệu thuộc nhiều công thức.
+- customers (1) --- (N) orders: Một khách hàng có nhiều đơn hàng.
+- users (1) --- (N) work_shifts: Một nhân viên có nhiều ca làm việc.
+- work_shifts (1) --- (N) orders: Một ca có nhiều đơn hàng.
+- tables --- tables (self-reference): Gộp bàn (mergedToId).
+
+3.4. CHUẨN HÓA DỮ LIỆU
+
+Cơ sở dữ liệu đã được chuẩn hóa đến dạng chuẩn 3NF:
+
+Dạng chuẩn 1NF (First Normal Form):
+- Tất cả các cột chứa giá trị nguyên tử (atomic), không có cột đa trị.
+- Mỗi bảng đều có khóa chính (Primary Key) dạng UUID.
+- Ví dụ: Cột permissions trong bảng roles lưu dưới dạng JSON array, mỗi phần tử là một chuỗi permission riêng biệt.
+
+Dạng chuẩn 2NF (Second Normal Form):
+- Đã đạt 1NF.
+- Mọi cột không khóa đều phụ thuộc hoàn toàn vào khóa chính.
+- Ví dụ: Bảng recipes có khóa tổ hợp (menuItemId, ingredientId) với ràng buộc @@unique, cột quantity phụ thuộc hoàn toàn vào cả hai khóa.
+
+Dạng chuẩn 3NF (Third Normal Form):
+- Đã đạt 2NF.
+- Không tồn tại phụ thuộc bắc cầu (transitive dependency).
+- Ví dụ: Thông tin Zone (khu vực) được tách riêng thành bảng zones, bảng tables chỉ lưu zoneId (FK) thay vì lưu trùng lặp tên khu vực.
+
+3.5. THIẾT KẾ API RESTFUL
+
+API được thiết kế theo chuẩn RESTful với quy ước đặt tên nhất quán. Mọi response đều tuân theo cấu trúc JSON thống nhất:
+
+Cấu trúc response thành công:
+{
+  "success": true,
+  "data": { ... },
+  "message": "Thao tác thành công",
+  "meta": { "page": 1, "limit": 20, "total": 100 }
+}
+
+Cấu trúc response lỗi:
+{
+  "success": false,
+  "error": {
+    "code": "ERR_UNAUTHORIZED",
+    "message": "Token hết hạn hoặc không hợp lệ",
+    "details": null
+  }
+}
+
+Bảng 3.3. Danh sách các API Endpoint chính
+
+Nhóm Auth:
+POST   /api/v1/auth/login          Đăng nhập
+POST   /api/v1/auth/logout         Đăng xuất
+POST   /api/v1/auth/refresh        Làm mới token
+
+Nhóm Tables:
+GET    /api/v1/tables              Lấy danh sách bàn
+POST   /api/v1/tables              Thêm bàn mới
+PUT    /api/v1/tables/:id          Cập nhật bàn
+POST   /api/v1/tables/move         Chuyển bàn
+POST   /api/v1/tables/merge        Gộp bàn
+
+Nhóm Orders:
+GET    /api/v1/orders              Lấy danh sách đơn hàng
+POST   /api/v1/orders              Tạo đơn hàng mới
+PUT    /api/v1/orders/:id/items    Cập nhật món trong đơn
+PATCH  /api/v1/orders/:id/status   Cập nhật trạng thái đơn
+
+Nhóm Payments:
+POST   /api/v1/payments            Thanh toán đơn hàng
+GET    /api/v1/payments/vietqr/:id Tạo mã VietQR
+
+Nhóm Menu:
+GET    /api/v1/menu                Lấy thực đơn
+POST   /api/v1/menu                Thêm món mới
+PUT    /api/v1/menu/:id            Cập nhật món
+DELETE /api/v1/menu/:id            Xóa món
+
+Nhóm Inventory:
+GET    /api/v1/inventory           Lấy danh sách nguyên liệu
+POST   /api/v1/inventory           Thêm nguyên liệu
+POST   /api/v1/inventory/:id/stock Nhập kho
+GET    /api/v1/inventory/logs      Lịch sử nhập/xuất kho
+
+Nhóm Customers:
+GET    /api/v1/customers           Danh sách khách hàng
+POST   /api/v1/customers           Thêm khách hàng mới
+
+Nhóm Shifts:
+POST   /api/v1/shifts/open         Mở ca
+POST   /api/v1/shifts/close        Chốt ca
+GET    /api/v1/shifts              Lịch sử ca
+
+Nhóm Dashboard:
+GET    /api/v1/dashboard/stats     Thống kê tổng quan
+GET    /api/v1/dashboard/revenue   Doanh thu theo thời gian
+GET    /api/v1/dashboard/top-items Top món bán chạy
+
+3.6. THIẾT KẾ BACKEND
+
+Backend được tổ chức theo mô hình phân lớp rõ ràng:
+
+backend/
+├── src/
+│   ├── controllers/    # Tiếp nhận HTTP Request, trả Response
+│   ├── services/       # Xử lý logic nghiệp vụ, gọi Prisma
+│   ├── routes/         # Định nghĩa API routes
+│   ├── middlewares/     # Auth, RBAC, Error Handler, Rate Limit
+│   ├── validators/     # Zod schema validation
+│   ├── socket/         # Socket.IO event handlers
+│   └── index.ts        # Entry point (Express + Socket.IO server)
+├── prisma/
+│   └── schema.prisma   # Định nghĩa schema CSDL
+└── package.json
+
+Luồng xử lý một request:
+Client Request -> Nginx -> Express Router -> Auth Middleware -> RBAC Middleware -> Zod Validator -> Controller -> Service -> Prisma ORM -> PostgreSQL -> Response
+
+3.7. THIẾT KẾ FRONTEND
+
+Frontend sử dụng Next.js 15 App Router với cấu trúc thư mục chuẩn:
+
+frontend/
+├── src/
+│   ├── app/
+│   │   ├── (dashboard)/      # Layout chính có Sidebar
+│   │   │   ├── page.tsx      # Dashboard (trang chủ)
+│   │   │   ├── tables/       # Sơ đồ bàn
+│   │   │   ├── orders/       # Gọi món
+│   │   │   ├── kds/          # Màn hình bếp
+│   │   │   ├── menu/         # Quản lý thực đơn
+│   │   │   ├── inventory/    # Quản lý kho
+│   │   │   ├── customers/    # Quản lý khách hàng
+│   │   │   ├── staff/        # Quản lý nhân sự
+│   │   │   ├── shifts/       # Quản lý ca
+│   │   │   ├── reservations/ # Đặt bàn
+│   │   │   └── invoices/     # Hóa đơn
+│   │   ├── login/            # Trang đăng nhập
+│   │   └── layout.tsx        # Root layout
+│   ├── components/
+│   │   └── ui/               # shadcn/ui components
+│   ├── lib/
+│   │   ├── axios.ts          # HTTP client config
+│   │   ├── socket.ts         # Socket.IO client
+│   │   └── utils.ts          # Utility functions
+│   └── stores/               # Zustand stores
+└── package.json
+
+Quản lý State:
+- Server State: TanStack Query (React Query) quản lý dữ liệu từ API, tự động caching và refetching.
+- Client State: Zustand cho trạng thái local (giỏ hàng, theme, thông tin đăng nhập).
+- Realtime State: Socket.IO client lắng nghe event và tự động invalidate React Query cache để giao diện tự cập nhật.
+
+3.8. THIẾT KẾ LUỒNG XỬ LÝ REALTIME
+
+Hệ thống sử dụng Socket.IO để đồng bộ dữ liệu thời gian thực giữa các màn hình:
+
+Các sự kiện Socket.IO chính:
+- table:status_changed: Khi trạng thái bàn thay đổi -> cập nhật sơ đồ bàn trên tất cả các client.
+- order:new: Khi có order mới -> KDS hiển thị ticket + phát âm thanh chuông.
+- order:item_status_changed: Khi bếp cập nhật trạng thái món -> POS/Waiter thấy ngay món đã sẵn sàng.
+- order:paid: Khi thanh toán xong -> bàn tự chuyển sang "Đang dọn" trên tất cả các client.
+- table:cleaning_started: Khi bàn bắt đầu dọn -> hiển thị đồng hồ đếm ngược 5 phút.
+
+(Sơ đồ luồng Socket.IO được trình bày trong Hình 3.9)
+
+
+================================================================================
+
+
+CHƯƠNG 4 - XÂY DỰNG CÁC MODULE CHỨC NĂNG
+
+4.1. MODULE XÁC THỰC VÀ PHÂN QUYỀN (AUTH & RBAC)
+
+Hệ thống xác thực được xây dựng dựa trên JWT (JSON Web Token) với cơ chế token kép:
+- Access Token: Thuật toán HS256, hết hạn sau 15 phút, gửi kèm trong header Authorization: Bearer <token>.
+- Refresh Token: Hết hạn sau 7 ngày, lưu hash trong CSDL (bảng refresh_tokens).
+- Mật khẩu: Mã hóa bằng bcrypt với 12 salt rounds trước khi lưu vào CSDL.
+
+Middleware xác thực: Mỗi request đến API được bảo vệ sẽ đi qua middleware authMiddleware để giải mã và xác minh JWT. Nếu token hết hạn, client sử dụng refresh token để lấy access token mới mà không cần đăng nhập lại.
+
+Phân quyền RBAC: Bảng roles lưu trữ danh sách quyền dưới dạng JSON array (ví dụ: ["orders:*", "menu:read", "tables:*"]). Middleware checkPermission kiểm tra quyền của người dùng trước khi cho phép truy cập API endpoint.
+
+4.2. MODULE QUẢN LÝ BÀN (TABLE MANAGEMENT)
+
+Module Quản lý bàn là thành phần trung tâm của hệ thống POS, cung cấp giao diện sơ đồ bàn trực quan theo từng khu vực (zone) với 4 trạng thái tự động đổi màu:
+- Xanh lá (AVAILABLE): Bàn trống, sẵn sàng đón khách.
+- Cam (OCCUPIED): Đang phục vụ khách.
+- Tím (RESERVED): Đã được đặt trước.
+- Vàng (CLEANING): Đang dọn dẹp, kèm đồng hồ đếm ngược 5 phút.
+
+Tính năng Chuyển bàn: Cho phép chuyển toàn bộ order từ bàn A sang bàn B khi khách muốn đổi vị trí. Bàn cũ tự động chuyển sang trạng thái "Đang dọn", bàn mới chuyển sang "Đang phục vụ".
+
+Tính năng Gộp bàn: Khi khách đông cần ngồi liền nhiều bàn, hệ thống cho phép gộp 2 bàn lại (mergedToId). Toàn bộ order được gộp vào bàn chính, bàn phụ chuyển sang trạng thái "Đang dọn" với bộ đếm ngược 5 phút.
+
+Đồng hồ đếm ngược thông minh: Khi bàn chuyển sang trạng thái "Đang dọn", hệ thống tự động thiết lập bộ đếm ngược 5 phút. Khi hết thời gian, bàn tự động quay về trạng thái "Trống" mà nhân viên không cần thao tác gì thêm.
+
+4.3. MODULE QUẢN LÝ ĐƠN HÀNG (ORDER MANAGEMENT)
+
+Quy trình tạo và quản lý đơn hàng:
+1. Thu ngân/Phục vụ chọn bàn -> hệ thống tạo order mới gắn với bàn đó.
+2. Chọn món từ thực đơn (hỗ trợ tìm kiếm, lọc theo danh mục).
+3. Thêm ghi chú cho từng món (ít đá, nhiều đường, không hành,...).
+4. Xác nhận gửi order xuống bếp -> Socket.IO phát sự kiện order:new.
+
+Luồng trạng thái đơn hàng (Order Status Flow):
+PENDING (Chờ xử lý) -> SENT (Đã gửi bếp) -> PREPARING (Đang nấu) -> READY (Sẵn sàng) -> SERVED (Đã phục vụ)
+
+Tính toán giá:
+Thành tiền = Số lượng x Đơn giá
+Tổng phụ (subtotal) = Tổng thành tiền các món
+VAT = Tổng phụ x 8%
+Giảm giá = Voucher + Điểm quy đổi
+Tổng cộng (totalAmount) = Tổng phụ + VAT - Giảm giá
+
+4.4. MODULE HIỂN THỊ BẾP (KDS - KITCHEN DISPLAY SYSTEM)
+
+KDS là màn hình dành riêng cho bộ phận bếp, được thiết kế tối ưu cho trải nghiệm trong môi trường nhà bếp:
+- Giao diện Kanban 3 cột: "MỚI VÀO" | "ĐANG LÀM" | "SẴN SÀNG".
+- Font chữ lớn, độ tương phản cao, dễ đọc từ xa.
+- Chế độ Fullscreen để toàn màn hình, không bị giao diện hệ điều hành che khuất.
+
+Thông báo âm thanh: Khi có order mới từ thu ngân, KDS sử dụng Web Audio API để phát âm thanh chuông báo, đảm bảo nhân viên bếp không bỏ sót order dù đang bận.
+
+Theo dõi thời gian chế biến: Hệ thống tự động đếm thời gian từ khi ticket được tạo. Nếu vượt quá 10 phút, ticket sẽ được đánh dấu "Urgent" (khẩn cấp) với viền đỏ nhấp nháy.
+
+4.5. MODULE THANH TOÁN (PAYMENT)
+
+Hệ thống hỗ trợ 3 phương thức thanh toán chính:
+
+a) Tiền mặt (Cash):
+- Thu ngân nhập số tiền khách đưa.
+- Hệ thống tự động tính tiền thừa = Tiền nhận - Tổng cộng.
+- Ghi nhận giao dịch ngay lập tức.
+
+b) VietQR (Chuyển khoản ngân hàng):
+- Hệ thống tự động sinh mã QR theo chuẩn Napas 271 (EMV QRCPS-MPM).
+- Mã QR chứa chính xác: số tài khoản, tên ngân hàng, số tiền, nội dung chuyển khoản (mã hóa đơn).
+- Khách quét mã bằng app ngân hàng và chuyển khoản.
+
+c) Thẻ (Card):
+- Ghi nhận phương thức thanh toán là "Thẻ".
+- Lưu mã giao dịch (transactionId) để đối soát.
+
+Sau khi thanh toán thành công:
+- Trạng thái order chuyển sang "Đã thanh toán" (PAID).
+- Tự động tích điểm cho khách hàng (nếu có SĐT).
+- Tự động trừ kho nguyên liệu theo công thức chế biến (Recipe).
+- Bàn chuyển sang trạng thái "Đang dọn" với đồng hồ đếm ngược 5 phút.
+- Toàn bộ thao tác được thực hiện trong một Database Transaction để đảm bảo tính toàn vẹn.
+
+4.6. MODULE QUẢN LÝ THỰC ĐƠN (MENU MANAGEMENT)
+
+Module cho phép quản lý toàn bộ danh mục và món ăn:
+- Quản lý danh mục (Category): Thêm, sửa, xóa danh mục (ví dụ: Khai vị, Món chính, Tráng miệng, Đồ uống).
+- Quản lý món ăn (MenuItem): CRUD đầy đủ với các trường: tên, giá bán, giá vốn, mô tả, hình ảnh, thời gian chế biến.
+- Upload hình ảnh: Hỗ trợ tải lên hình ảnh minh họa cho từng món.
+- Bật/tắt khả dụng: Nhanh chóng ẩn/hiện món khi hết nguyên liệu.
+
+4.7. MODULE QUẢN LÝ KHO VÀ NGUYÊN LIỆU (INVENTORY)
+
+Hệ thống quản lý kho được xây dựng dựa trên mô hình công thức chế biến (Recipe-based):
+
+Công thức chế biến (Recipe): Mỗi món ăn được liên kết với danh sách nguyên liệu cần thiết và định lượng cụ thể. Ví dụ: 1 phần Phở Bò = 200g Bánh phở + 150g Thịt bò + 500ml Nước dùng + 50g Hành lá.
+
+Tự động trừ kho: Khi hóa đơn được thanh toán, hệ thống tự động tra cứu công thức chế biến của từng món, nhân với số lượng đã bán, và trừ số lượng tương ứng trong kho nguyên liệu. Toàn bộ quá trình này được bọc trong Prisma Transaction để đảm bảo tính nhất quán.
+
+Cảnh báo tồn kho thấp: Khi số lượng nguyên liệu giảm xuống dưới mức tối thiểu (minQuantity), hệ thống tự động cảnh báo để nhân viên kịp thời nhập kho bổ sung.
+
+Nhập kho: Quản lý ghi nhận số lượng nhập, giá nhập/đơn vị, tự động cập nhật giá vốn trung bình và tồn kho hiện tại.
+
+4.8. MODULE KHÁCH HÀNG VÀ TÍCH ĐIỂM (CRM & LOYALTY)
+
+Hệ thống CRM tích điểm được thiết kế để xây dựng mối quan hệ lâu dài với khách hàng:
+
+Quản lý khách hàng: Tự động tạo hồ sơ khách hàng mới dựa trên số điện thoại khi thanh toán lần đầu. Lưu trữ thông tin: tên, SĐT, tổng điểm, tổng chi tiêu tích lũy.
+
+Quy tắc tích điểm: Cứ mỗi 10.000đ chi tiêu, khách nhận được 1 điểm thưởng. Điểm được tính tự động ngay khi thanh toán thành công.
+
+Quy đổi điểm: Khách hàng có thể sử dụng điểm tích lũy để trừ trực tiếp vào hóa đơn với tỷ lệ 1 điểm = 1.000đ. Việc trừ điểm được xử lý bằng Database Transaction (Atomic) để đảm bảo không xảy ra sai lệch.
+
+4.9. MODULE CA LÀM VIỆC (SHIFT MANAGEMENT)
+
+Module quản lý ca làm việc giúp kiểm soát doanh thu và đối soát tiền mặt:
+
+Mở ca: Thu ngân bắt đầu ca bằng cách khai báo số tiền mặt đầu ca (opening cash) - đây là số tiền lẻ có sẵn trong két để thối cho khách.
+
+Trong ca: Mọi đơn hàng và thanh toán đều được gắn liền với ca hiện tại (shiftId), giúp truy xuất chính xác doanh thu theo từng ca.
+
+Chốt ca: Khi kết thúc ca, hệ thống tự động:
+- Tổng hợp doanh thu (tiền mặt, chuyển khoản, thẻ).
+- So sánh tiền mặt thực tế (closingCash) với tiền mặt tính toán trên hệ thống.
+- Xác định trạng thái: SURPLUS (thừa tiền), DEFICIT (thiếu tiền), hoặc BALANCED (cân bằng).
+
+4.10. MODULE ĐẶT BÀN TRƯỚC (RESERVATION)
+
+Hệ thống cho phép quản lý việc đặt bàn trước:
+- Tiếp nhận thông tin: Tên khách hàng, số điện thoại, số lượng khách, thời gian dự kiến đến, ghi chú.
+- Chọn bàn: Lựa chọn bàn trống phù hợp với số lượng khách.
+- Trạng thái: PENDING (chờ xác nhận) -> CONFIRMED (đã xác nhận) -> COMPLETED (đã đến) / CANCELLED (đã hủy).
+- Khi đặt bàn được xác nhận, trạng thái bàn chuyển sang RESERVED (Đã đặt) trên sơ đồ bàn.
+
+
+================================================================================
+
+
+CHƯƠNG 5 - CƠ SỞ DỮ LIỆU VÀ BẢO MẬT
+
+5.1. CHI TIẾT CÁC BẢNG CƠ SỞ DỮ LIỆU
+
+Bảng 5.1. Cấu trúc bảng users (Nhân viên)
+Tên cột          Kiểu dữ liệu     Mô tả
+id               UUID (PK)         Mã định danh duy nhất
+email            VARCHAR(255)      Email đăng nhập (Unique)
+password_hash    VARCHAR(255)      Mật khẩu đã mã hóa bcrypt
+full_name        VARCHAR(100)      Họ và tên
+phone            VARCHAR(20)       Số điện thoại (Unique)
+role_id          UUID (FK)         Liên kết đến bảng roles
+avatar_url       TEXT              Đường dẫn ảnh đại diện
+is_active        BOOLEAN           Trạng thái hoạt động
+last_login_at    TIMESTAMPTZ       Thời điểm đăng nhập cuối
+created_at       TIMESTAMPTZ       Thời điểm tạo
+updated_at       TIMESTAMPTZ       Thời điểm cập nhật cuối
+deleted_at       TIMESTAMPTZ       Soft delete (xóa mềm)
+
+Bảng 5.2. Cấu trúc bảng tables (Bàn ăn)
+Tên cột          Kiểu dữ liệu     Mô tả
+id               UUID (PK)         Mã định danh duy nhất
+table_number     VARCHAR(20)       Số bàn (Unique)
+zone_id          UUID (FK)         Liên kết đến bảng zones
+capacity         INTEGER           Sức chứa (số ghế)
+status           VARCHAR(20)       Trạng thái (available/occupied/reserved/cleaning)
+qr_code_url      TEXT              Đường dẫn mã QR của bàn
+merged_to_id     UUID (FK)         ID bàn được gộp vào (self-reference)
+created_at       TIMESTAMPTZ       Thời điểm tạo
+
+Bảng 5.3. Cấu trúc bảng orders (Đơn hàng)
+Tên cột          Kiểu dữ liệu     Mô tả
+id               UUID (PK)         Mã định danh duy nhất
+order_code       VARCHAR(20)       Mã đơn hàng hiển thị (Unique)
+table_id         UUID (FK)         Liên kết đến bảng tables
+user_id          UUID (FK)         Nhân viên tạo đơn
+shift_id         UUID (FK)         Ca làm việc
+customer_id      UUID (FK)         Khách hàng thân thiết (nếu có)
+order_type       VARCHAR(20)       Loại: dine_in / take_away
+status           VARCHAR(30)       Trạng thái đơn hàng
+subtotal         DECIMAL(12,2)     Tổng phụ
+discount_amount  DECIMAL(12,2)     Số tiền giảm giá
+tax_amount       DECIMAL(12,2)     Thuế VAT
+total_amount     DECIMAL(12,2)     Tổng cộng
+points_earned    INTEGER           Điểm được tích
+points_used      INTEGER           Điểm đã dùng
+notes            TEXT              Ghi chú
+created_at       TIMESTAMPTZ       Thời điểm tạo
+paid_at          TIMESTAMPTZ       Thời điểm thanh toán
+
+Bảng 5.4. Cấu trúc bảng order_items (Chi tiết đơn hàng)
+Tên cột          Kiểu dữ liệu     Mô tả
+id               UUID (PK)         Mã định danh duy nhất
+order_id         UUID (FK)         Liên kết đến bảng orders (Cascade Delete)
+menu_item_id     UUID (FK)         Liên kết đến bảng menu_items
+quantity         INTEGER           Số lượng
+unit_price       DECIMAL(12,2)     Đơn giá
+subtotal         DECIMAL(12,2)     Thành tiền (quantity x unit_price)
+status           VARCHAR(20)       Trạng thái (pending/preparing/ready/served)
+notes            TEXT              Ghi chú đặc biệt (ít đá, không hành,...)
+
+Bảng 5.5. Cấu trúc bảng payments (Thanh toán)
+Tên cột          Kiểu dữ liệu     Mô tả
+id               UUID (PK)         Mã định danh duy nhất
+order_id         UUID (FK)         Liên kết 1-1 đến bảng orders (Unique)
+method           VARCHAR(30)       Phương thức (cash/vietqr/card)
+amount           DECIMAL(12,2)     Số tiền cần thanh toán
+received_amount  DECIMAL(12,2)     Số tiền khách đưa
+change_amount    DECIMAL(12,2)     Tiền thừa trả lại
+transaction_id   VARCHAR(100)      Mã giao dịch (cho VietQR/thẻ)
+status           VARCHAR(20)       Trạng thái (pending/completed)
+paid_at          TIMESTAMPTZ       Thời điểm thanh toán
+metadata         JSONB             Thông tin bổ sung
+
+Bảng 5.6. Cấu trúc bảng menu_items (Món ăn)
+Tên cột          Kiểu dữ liệu     Mô tả
+id               UUID (PK)         Mã định danh duy nhất
+category_id      UUID (FK)         Liên kết đến bảng categories
+name             VARCHAR(200)      Tên món ăn
+description      TEXT              Mô tả chi tiết
+price            DECIMAL(12,2)     Giá bán
+cost_price       DECIMAL(12,2)     Giá vốn
+image_url        TEXT              Hình ảnh minh họa
+is_available     BOOLEAN           Còn phục vụ hay không
+is_featured      BOOLEAN           Món nổi bật / đề xuất
+prep_time_minutes INTEGER          Thời gian chế biến ước tính (phút)
+created_at       TIMESTAMPTZ       Thời điểm tạo
+deleted_at       TIMESTAMPTZ       Soft delete (xóa mềm)
+
+Bảng 5.7. Cấu trúc bảng ingredients (Nguyên liệu)
+Tên cột          Kiểu dữ liệu     Mô tả
+id               UUID (PK)         Mã định danh duy nhất
+name             VARCHAR(150)      Tên nguyên liệu
+unit             VARCHAR(30)       Đơn vị tính (kg, g, lít, ml, cái,...)
+stock_quantity   DECIMAL(10,3)     Số lượng tồn kho hiện tại
+min_quantity     DECIMAL(10,3)     Mức tồn kho tối thiểu (cảnh báo)
+cost_per_unit    DECIMAL(12,2)     Giá nhập/đơn vị
+supplier         VARCHAR(200)      Nhà cung cấp
+is_active        BOOLEAN           Đang sử dụng
+updated_at       TIMESTAMPTZ       Cập nhật cuối
+
+Bảng 5.8. Cấu trúc bảng recipes (Công thức chế biến)
+Tên cột          Kiểu dữ liệu     Mô tả
+id               UUID (PK)         Mã định danh duy nhất
+menu_item_id     UUID (FK)         Liên kết đến bảng menu_items
+ingredient_id    UUID (FK)         Liên kết đến bảng ingredients
+quantity         DECIMAL(10,3)     Số lượng nguyên liệu cần
+unit             VARCHAR(30)       Đơn vị tính
+note             TEXT              Ghi chú (tuỳ chọn)
+Ràng buộc: UNIQUE(menu_item_id, ingredient_id)
+
+Bảng 5.9. Cấu trúc bảng customers (Khách hàng)
+Tên cột          Kiểu dữ liệu     Mô tả
+id               UUID (PK)         Mã định danh duy nhất
+phone            VARCHAR(20)       Số điện thoại (Unique)
+full_name        VARCHAR(100)      Họ và tên khách hàng
+points           INTEGER           Tổng điểm tích lũy hiện tại
+total_spent      DECIMAL(12,2)     Tổng chi tiêu tích lũy
+created_at       TIMESTAMPTZ       Thời điểm tạo hồ sơ
+
+5.2. VALIDATION DỮ LIỆU VỚI ZOD
+
+Hệ thống sử dụng thư viện Zod để kiểm tra tính hợp lệ của dữ liệu đầu vào tại tầng Application (trước khi đến Service). Các schema validation chính:
+
+- Login Schema: email phải đúng định dạng email, password tối thiểu 6 ký tự.
+- Create User Schema: email unique, fullName tối thiểu 2 ký tự, roleId phải tồn tại.
+- Create Order Schema: tableId bắt buộc cho DINE_IN, items là mảng chứa ít nhất 1 phần tử.
+- Payment Schema: method phải thuộc enum [cash, vietqr, card], amount phải lớn hơn 0.
+
+5.3. BẢO MẬT HỆ THỐNG
+
+a) Xác thực và Phân quyền:
+- JWT Access Token (HS256, TTL: 15 phút) + Refresh Token (TTL: 7 ngày).
+- Bcrypt password hashing với 12 salt rounds.
+- RBAC Middleware kiểm tra quyền trước khi xử lý request.
+
+b) Chống tấn công:
+- Rate Limiting: 200 request/15 phút cho API chung, 10 lần đăng nhập/15 phút.
+- CORS: Chỉ chấp nhận request từ domain Frontend được cấu hình.
+- Security Headers (Helmet): Content-Security-Policy, HSTS (1 năm), X-Content-Type-Options: nosniff.
+- SQL Injection Prevention: Sử dụng Prisma ORM với parameterized queries, không bao giờ nối chuỗi SQL thủ công.
+
+c) Bảo vệ dữ liệu nhạy cảm:
+- Mật khẩu không bao giờ trả về trong API response.
+- Prisma select clause loại trừ trường password_hash.
+- Token hash được lưu trong CSDL thay vì token nguyên bản.
+
+
+================================================================================
+
+
+CHƯƠNG 6 - TÍNH NĂNG NÂNG CAO VÀ TÍCH HỢP
+
+6.1. TÍCH HỢP VIETQR
+
+VietQR là chuẩn mã QR thanh toán liên ngân hàng tại Việt Nam theo tiêu chuẩn EMV QRCPS-MPM / Napas 271. Hệ thống RestoPOS tích hợp VietQR để tạo mã QR động cho mỗi hóa đơn:
+
+Quy trình hoạt động:
+1. Khi thu ngân chọn phương thức "Chuyển khoản QR", hệ thống gọi VietQR API.
+2. API trả về hình ảnh mã QR chứa đầy đủ thông tin: số tài khoản nhà hàng, ngân hàng thụ hưởng, số tiền chính xác và nội dung chuyển khoản (mã hóa đơn).
+3. Mã QR được hiển thị fullscreen trên màn hình POS để khách hàng quét bằng ứng dụng ngân hàng.
+4. Khách hàng quét mã, xác nhận thanh toán. Mọi thông tin đã được điền sẵn, khách chỉ cần nhấn "Chuyển".
+
+6.2. XUẤT HÓA ĐƠN PDF
+
+Hệ thống hỗ trợ xuất hóa đơn dưới dạng file PDF với khổ giấy A6 (phù hợp máy in nhiệt):
+- Template được xây dựng bằng HTML/CSS và chuyển đổi sang PDF.
+- Nội dung hóa đơn bao gồm: tên nhà hàng, mã đơn hàng, danh sách món, số lượng, đơn giá, tổng cộng, phương thức thanh toán, ngày giờ, nhân viên phục vụ.
+- Hóa đơn có thể in trực tiếp hoặc gửi qua email cho khách hàng.
+
+6.3. DASHBOARD VÀ BÁO CÁO THỐNG KÊ
+
+Dashboard tổng quan cung cấp cái nhìn toàn diện về hoạt động kinh doanh:
+
+Thẻ KPI (Key Performance Indicators):
+- Doanh thu hôm nay: Tổng tiền các hóa đơn đã thanh toán trong ngày.
+- Doanh thu tháng: Tổng doanh thu tháng hiện tại.
+- Số đơn hàng hôm nay: Tổng số đơn đã hoàn thành.
+- Số bàn đang phục vụ: Số bàn có trạng thái OCCUPIED.
+- Món bán chạy nhất: Món có số lượng bán cao nhất trong ngày.
+
+Biểu đồ thống kê (sử dụng thư viện Recharts):
+- Biểu đồ đường: Doanh thu theo 7 ngày / 12 tháng / 5 năm gần nhất.
+- Biểu đồ cột: Doanh thu theo khu vực (Zone), Top 10 món bán chạy.
+- Biểu đồ tròn: Tỷ lệ phương thức thanh toán (Tiền mặt / VietQR / Thẻ).
+
+Xuất báo cáo Excel: Hỗ trợ xuất dữ liệu doanh thu, danh sách đơn hàng, tồn kho ra file Excel với định dạng cột tự động.
+
+6.4. TÍCH HỢP TELEGRAM BOT
+
+Hệ thống tích hợp Telegram Bot để gửi thông báo nhắc nhở đặt bàn:
+- Khi khách đặt bàn trước, hệ thống tự động gửi tin nhắn nhắc nhở qua Telegram cho quản lý trước 30 phút.
+- Tin nhắn chứa thông tin: tên khách, số lượng, bàn đã đặt, thời gian dự kiến đến.
+
+
+================================================================================
+
+
+CHƯƠNG 7 - TRIỂN KHAI VÀ HƯỚNG DẪN SỬ DỤNG
+
+7.1. YÊU CẦU HỆ THỐNG
+
+Môi trường phát triển (Development):
+- Node.js phiên bản 18.x trở lên (khuyến nghị v22 LTS).
+- npm phiên bản 10 trở lên.
+- PostgreSQL Server phiên bản 14 trở lên.
+- Trình duyệt web hiện đại (Chrome, Edge, Safari, Firefox).
+
+Môi trường triển khai (Production):
+- Server: 2 vCPU, 4GB RAM, 20GB SSD.
+- Hệ điều hành: Ubuntu 22.04 LTS hoặc Windows Server.
+- Nginx làm Reverse Proxy.
+- SSL Certificate (Let's Encrypt).
+
+7.2. HƯỚNG DẪN CÀI ĐẶT
+
+Bước 1: Clone mã nguồn từ Git
+git clone <repository-url>
+cd POS-Nha_Hang-CT07
+
+Bước 2: Cấu hình biến môi trường
+Sao chép file .env.example thành .env tại thư mục backend và frontend, điền các thông tin:
+- DATABASE_URL: Chuỗi kết nối PostgreSQL.
+- JWT_SECRET: Khóa bí mật cho JWT.
+- VIETQR_API_KEY: API Key cho VietQR (nếu sử dụng thanh toán QR).
+
+Bước 3: Cài đặt thư viện
+Chạy lệnh npm install tại thư mục gốc (đã cấu hình script cài đặt gộp).
+
+Bước 4: Khởi tạo cơ sở dữ liệu
+Tại thư mục backend, chạy: npx prisma db push
+Lệnh này sẽ tự động tạo toàn bộ bảng và cấu trúc trong PostgreSQL.
+
+Bước 5: Nạp dữ liệu mẫu (tùy chọn)
+Chạy: npx prisma db seed
+Dữ liệu mẫu bao gồm: 5 tài khoản demo (Admin, Manager, Cashier, Waiter, Kitchen), 4 khu vực, 24 bàn, 3 danh mục và 14 món ăn.
+
+Bước 6: Khởi động hệ thống
+Tại thư mục gốc POS-Nha_Hang-CT07, chạy: npm run dev
+Lệnh này sẽ đồng thời khởi động cả Backend (http://localhost:4000) và Frontend (http://localhost:3000).
+
+Bước 7: Truy cập hệ thống
+Mở trình duyệt, truy cập http://localhost:3000 và đăng nhập.
+
+Tài khoản demo:
+- Admin:   admin@restopos.demo    / Admin@123456
+- Manager: manager@restopos.demo  / Manager@123456
+- Cashier: cashier@restopos.demo  / Cashier@123456
+- Waiter:  waiter@restopos.demo   / Waiter@123456
+- Kitchen: kitchen@restopos.demo  / Kitchen@123456
+
+7.3. HƯỚNG DẪN SỬ DỤNG CÁC CHỨC NĂNG CHÍNH
+
+a) Quy trình bán hàng cơ bản:
+1. Đăng nhập bằng tài khoản Thu ngân.
+2. Vào trang "Sơ đồ bàn" -> Chọn bàn trống -> Nhấn "Gọi món".
+3. Chọn món từ thực đơn, thêm ghi chú nếu cần, nhấn "Gửi bếp".
+4. Mở tab trình duyệt mới, đăng nhập tài khoản Kitchen -> Vào "Màn hình bếp".
+5. Nhận ticket, xác nhận "Đang nấu" -> Khi xong nhấn "Hoàn thành".
+6. Quay lại tab Thu ngân, chọn bàn -> Nhấn "Thanh toán" -> Chọn phương thức -> Xác nhận.
+
+b) Quản lý ca làm việc:
+1. Đăng nhập -> Hệ thống tự mở ca, khai báo tiền mặt đầu ca.
+2. Bán hàng trong suốt ca.
+3. Cuối ca -> Vào "Quản lý ca" -> Nhấn "Chốt ca" -> Nhập tiền mặt thực tế -> Xác nhận.
+
+c) Quản lý kho nguyên liệu:
+1. Vào "Kho hàng" -> Thêm nguyên liệu mới (tên, đơn vị, giá nhập, mức tối thiểu).
+2. Vào "Thực đơn" -> Chọn món -> Thiết lập "Công thức" (Recipe) liên kết nguyên liệu.
+3. Khi bán hàng và thanh toán, kho tự động trừ theo công thức.
+
+
+================================================================================
+
+
+CHƯƠNG 8 - KẾT QUẢ VÀ ĐÁNH GIÁ
+
+8.1. KẾT QUẢ ĐẠT ĐƯỢC
+
+Sau quá trình phân tích, thiết kế và xây dựng, hệ thống RestoPOS đã hoàn thành các mục tiêu đề ra:
+
+Về mặt kỹ thuật:
+- Xây dựng thành công hệ thống web POS đầy đủ với 12 module chức năng, 54 yêu cầu chức năng và hơn 50 API endpoint.
+- Đồng bộ dữ liệu thời gian thực (realtime) giữa POS, KDS và Dashboard thông qua Socket.IO, độ trễ dưới 100ms.
+- Cơ sở dữ liệu 16 bảng được chuẩn hóa đến 3NF, đảm bảo tính toàn vẹn và không trùng lặp dữ liệu.
+- Bảo mật hệ thống đa tầng: JWT + Refresh Token, bcrypt, Rate Limiting, CORS, Helmet Security Headers.
+
+Về mặt nghiệp vụ:
+- Sơ đồ bàn tương tác realtime với 4 trạng thái tự động và bộ đếm ngược 5 phút cho bàn "Đang dọn".
+- Màn hình Bếp (KDS) dạng Kanban fullscreen với thông báo âm thanh và cảnh báo khẩn cấp.
+- Thanh toán đa kênh: Tiền mặt (tự động tính thừa), VietQR (mã QR động), Thẻ.
+- Hệ thống CRM tích điểm hoàn chỉnh: 10.000đ = 1 điểm, 1 điểm = 1.000đ khi đổi.
+- Quản lý kho tự động dựa trên công thức chế biến (Recipe), trừ kho khi thanh toán bằng Transaction.
+- Dashboard thống kê doanh thu trực quan với biểu đồ Recharts.
+
+Về giao diện:
+- Giao diện hiện đại, thẩm mỹ cao, sử dụng shadcn/ui và TailwindCSS.
+- Responsive trên Desktop, Tablet và Mobile.
+- Hỗ trợ Dark Mode / Light Mode.
+- Touch-friendly với kích thước nút tối thiểu 44x44px.
+
+8.2. GIAO DIỆN HỆ THỐNG
+
+(Phần này chèn ảnh chụp màn hình giao diện thực tế của hệ thống, bao gồm:)
+- Hình 4.1: Màn hình đăng nhập
+- Hình 4.2: Sơ đồ bàn với các trạng thái màu sắc
+- Hình 4.3: Giao diện gọi món (Order)
+- Hình 4.4: Màn hình bếp KDS (Kitchen Display System)
+- Hình 4.5: Giao diện thanh toán và mã VietQR
+- Hình 4.6: Dashboard thống kê doanh thu
+- Hình 4.7: Quản lý kho nguyên liệu
+- Hình 4.8: Quản lý khách hàng và tích điểm
+
+8.3. ĐÁNH GIÁ HỆ THỐNG
+
+Bảng 8.1. Đánh giá kết quả hệ thống
+
+STT  Tiêu chí                          Mục tiêu            Kết quả          Đánh giá
+1    Số module hoàn thành               12 module            12/12            Đạt
+2    Số yêu cầu chức năng              54 FR                54/54            Đạt
+3    Đồng bộ realtime                   < 1 giây             < 100ms          Vượt
+4    API response time                  < 500ms              < 300ms          Vượt
+5    Cơ sở dữ liệu chuẩn hóa          3NF                  3NF              Đạt
+6    Bảo mật                            JWT + RBAC           Đầy đủ           Đạt
+7    Thanh toán đa kênh                 3 kênh               3/3 kênh         Đạt
+8    Responsive                         3 kích thước         Desktop+Tablet   Đạt
+9    Dark Mode                          Có                   Có               Đạt
+10   Tích hợp API bên thứ 3            VietQR               VietQR           Đạt
+
+
+================================================================================
+
+
+KẾT LUẬN VÀ KIẾN NGHỊ
+
+1. Những kết luận chính
+
+Qua quá trình thực hiện đồ án "Phân tích, thiết kế, xây dựng và triển khai website POS cho nhà hàng (RestoPOS)", em đã đạt được các kết quả sau:
+
+- Hoàn thành xây dựng một hệ thống phần mềm POS toàn diện, chuyên nghiệp với 12 module chức năng đáp ứng đầy đủ nhu cầu vận hành của một nhà hàng quy mô vừa và nhỏ.
+- Áp dụng thành công bộ công nghệ hiện đại hàng đầu: TypeScript, Next.js, Node.js, Express.js, Prisma ORM, PostgreSQL, Socket.IO - tất cả đều là các công nghệ đang được sử dụng rộng rãi trong ngành công nghiệp phần mềm.
+- Giải quyết được bài toán đồng bộ thời gian thực (realtime) giữa Thu ngân, Bếp và Quản lý, giúp tối ưu hóa quy trình phục vụ khách hàng.
+- Tích hợp thành công thanh toán qua mã VietQR động, hệ thống tích điểm CRM và quản lý kho tự động dựa trên công thức chế biến.
+- Nắm vững và vận dụng thành thạo các kỹ thuật phát triển phần mềm quan trọng: JWT Authentication, RBAC Authorization, Database Transaction, WebSocket Communication, Component-based Architecture và ORM.
+
+2. Đóng góp của đồ án
+
+- Cung cấp một giải pháp POS mã nguồn mở, tùy biến linh hoạt cho các nhà hàng Việt Nam với chi phí thấp.
+- Tích hợp sâu thanh toán VietQR - một xu hướng thanh toán đang phát triển mạnh tại Việt Nam.
+- Xây dựng hệ thống CRM tích điểm giúp nhà hàng chăm sóc khách hàng thân thiết, tăng tỷ lệ quay lại.
+
+3. Hạn chế
+
+- Chưa hỗ trợ hoạt động Offline khi mất kết nối mạng.
+- Chưa tích hợp trực tiếp máy in hóa đơn nhiệt (ESC/POS protocol).
+- Hệ thống khuyến mãi (Combo, Voucher, Happy Hour) chưa được xây dựng đầy đủ.
+
+4. Kiến nghị và hướng phát triển
+
+- Phát triển tính năng PWA (Progressive Web App) để hỗ trợ hoạt động Offline khi mất mạng.
+- Xây dựng ứng dụng di động (Mobile App) hoặc Zalo Mini App cho khách hàng tự gọi món tại bàn qua QR Code.
+- Tích hợp AI để phân tích dữ liệu bán hàng, dự đoán nhu cầu nguyên vật liệu và gợi ý nhập kho tự động.
+- Kết nối máy in hóa đơn nhiệt qua giao thức ESC/POS để in bill trực tiếp.
+- Mở rộng hệ thống khuyến mãi: Combo, Happy Hour, Voucher sinh nhật tự động.
+- Triển khai đa chi nhánh (Multi-branch) để hỗ trợ chuỗi nhà hàng.
+
+
+================================================================================
+
+
+DANH MỤC TÀI LIỆU THAM KHẢO
+
+Tiếng Việt
+[1] Trường Đại học Hùng Vương TP.HCM (2025), Biểu mẫu báo cáo Đồ án Công nghệ Phần mềm, Khoa Kỹ thuật - Công nghệ.
+[2] Nhóm CT07 (2025), Đề tài đồ án CNPM: "Phân tích, thiết kế, xây dựng và triển khai website POS cho nhà hàng", Trường Đại học Hùng Vương TP.HCM.
+
+Tiếng Anh
+[3] Vercel Inc. (2025), Next.js Documentation, https://nextjs.org/docs
+[4] Prisma Technologies (2025), Prisma ORM Documentation, https://www.prisma.io/docs
+[5] Socket.IO Team (2025), Socket.IO Documentation, https://socket.io/docs
+[6] The PostgreSQL Global Development Group (2025), PostgreSQL 16 Documentation, https://www.postgresql.org/docs/16/
+[7] Express.js Community (2025), Express.js API Reference, https://expressjs.com/en/5x/api.html
+[8] Microsoft (2025), TypeScript Documentation, https://www.typescriptlang.org/docs/
+[9] Shadcn (2025), shadcn/ui - Accessible and Customizable Components, https://ui.shadcn.com/
+[10] TanStack (2025), TanStack Query Documentation, https://tanstack.com/query/latest
+[11] Napas (2025), Tiêu chuẩn kỹ thuật VietQR - Napas 271, https://vietqr.net/
+[12] Zustand Community (2025), Zustand - Bear necessities for state management, https://zustand-demo.pmnd.rs/
+[13] Recharts Community (2025), Recharts - A composable charting library, https://recharts.org/
+[14] Auth0 (2025), Introduction to JSON Web Tokens, https://jwt.io/introduction
+[15] OWASP Foundation (2025), OWASP Top Ten Web Application Security Risks, https://owasp.org/www-project-top-ten/
