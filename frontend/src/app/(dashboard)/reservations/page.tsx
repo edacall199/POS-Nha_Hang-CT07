@@ -291,7 +291,11 @@ export default function ReservationPage() {
                 <Label htmlFor="table">Xếp Bàn</Label>
                 <Select value={formData.tableId} onValueChange={(v) => setFormData({...formData, tableId: v as string})}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Chọn bàn trống" />
+                    <SelectValue placeholder="Chọn bàn trống">
+                      {tables.find((t: any) => t.id === formData.tableId)
+                        ? `Bàn ${tables.find((t: any) => t.id === formData.tableId)?.tableNumber} - ${tables.find((t: any) => t.id === formData.tableId)?.zone?.name}`
+                        : "Chọn bàn trống"}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {tables.map((t: any) => (

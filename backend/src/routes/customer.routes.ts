@@ -8,3 +8,4 @@ customerRouter.use(authenticate);
 customerRouter.get('/phone/:phone', customerController.getByPhone);
 customerRouter.post('/', customerController.registerOrUpdate);
 customerRouter.get('/', customerController.getAll);
+customerRouter.get('/:id/points', customerController.getPointTransactions);

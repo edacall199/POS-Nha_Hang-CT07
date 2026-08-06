@@ -129,7 +129,7 @@ export function RecipeDialog({ isOpen, onClose, menuItem }: RecipeDialogProps) {
             Định lượng nguyên liệu (BOM)
           </DialogTitle>
           <DialogDescription>
-            Thiết lập định lượng nguyên liệu cho món <strong className="text-slate-800">{menuItem?.name}</strong>. Khi món này được bán, hệ thống sẽ tự động trừ kho.
+            Thiết lập định lượng nguyên liệu cho món <strong className="text-slate-800 dark:text-slate-200">{menuItem?.name}</strong>. Khi món này được bán, hệ thống sẽ tự động trừ kho.
           </DialogDescription>
         </DialogHeader>
 
@@ -140,13 +140,13 @@ export function RecipeDialog({ isOpen, onClose, menuItem }: RecipeDialogProps) {
         ) : (
           <div className="space-y-4 py-4">
             {recipes.length === 0 ? (
-              <div className="text-center py-6 bg-slate-50 rounded-lg border border-dashed text-slate-500">
+              <div className="text-center py-6 bg-slate-50 dark:bg-slate-900/50 rounded-lg border border-dashed dark:border-slate-800 text-slate-500 dark:text-slate-400">
                 Chưa có định lượng nào. Bấm thêm nguyên liệu để bắt đầu.
               </div>
             ) : (
               <div className="space-y-3">
                 {recipes.map((recipe, index) => (
-                  <div key={index} className="flex items-start gap-2 bg-slate-50 p-3 rounded-lg border">
+                  <div key={index} className="flex items-start gap-2 bg-slate-50 dark:bg-slate-900/50 p-3 rounded-lg border dark:border-slate-800">
                     <div className="flex-1 space-y-3">
                       <div className="grid grid-cols-2 gap-3">
                         <div className="space-y-1">

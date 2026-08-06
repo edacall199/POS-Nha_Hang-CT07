@@ -319,7 +319,9 @@ export default function MenuManagementPage() {
                 <Label htmlFor="category">Danh mục</Label>
                 <Select value={formData.categoryId} onValueChange={(v) => setFormData({...formData, categoryId: v as string})}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Chọn danh mục" />
+                    <SelectValue placeholder="Chọn danh mục">
+                      {categories.find((c: any) => c.id === formData.categoryId)?.name || "Chọn danh mục"}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {categories.map((c: any) => (

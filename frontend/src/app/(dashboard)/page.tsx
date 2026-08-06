@@ -3,25 +3,57 @@
 import { useQuery } from '@tanstack/react-query';
 import * as XLSX from 'xlsx';
 import { 
-  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer 
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer,
+  PieChart, Pie, Cell, Legend
 } from 'recharts';
 import { 
   ArrowUpRight, ArrowDownRight, DollarSign, ShoppingBag, TrendingUp, Users, Loader2, Download
 } from 'lucide-react';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import api from '@/lib/axios';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { getSocket } from '@/lib/socket';
+import { useQueryClient } from '@tanstack/react-query';
 
 export default function DashboardPage() {
   const [timeRange, setTimeRange] = useState('day');
+  const [paymentTimeRange, setPaymentTimeRange] = useState('day');
+  const queryClient = useQueryClient();
+
+  useEffect(() => {
+    const socket = getSocket();
+    
+    // Connect if not connected (dashboard might be the first page they land on)
+    if (!socket.connected) {
+      socket.connect();
+    }
+
+    const onAnalyticsUpdate = () => {
+      queryClient.invalidateQueries({ queryKey: ['analytics'] });
+    };
+
+    socket.on('analytics:update', onAnalyticsUpdate);
+
+    return () => {
+      socket.off('analytics:update', onAnalyticsUpdate);
+    };
+  }, [queryClient]);
 
   const { data: stats, isLoading, isError } = useQuery({
     queryKey: ['analytics', 'dashboard', timeRange],
     queryFn: async () => {
       const res: any = await api.get(`/analytics/dashboard?timeRange=${timeRange}`);
+      return res.data;
+    }
+  });
+
+  const { data: paymentStats } = useQuery({
+    queryKey: ['analytics', 'payment', paymentTimeRange],
+    queryFn: async () => {
+      const res: any = await api.get(`/analytics/dashboard?timeRange=${paymentTimeRange}`);
       return res.data;
     }
   });
@@ -48,6 +80,9 @@ export default function DashboardPage() {
   }
 
   const { summary, revenueChart, topItems } = stats;
+  const paymentMethods = paymentStats?.paymentMethods || stats.paymentMethods || [];
+
+  const PIE_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#ef4444'];
 
   const handleExportExcel = () => {
     const wb = XLSX.utils.book_new();
@@ -92,76 +127,61 @@ export default function DashboardPage() {
         </Button>
       </div>
 
-      {/* Summary Cards */}
+      {/* Top Row: 4 Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Doanh thu hôm nay</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <div className={`text-xs px-2 py-1 rounded-full ${summary.revenueGrowth >= 0 ? 'bg-emerald-100 text-emerald-700' : 'bg-red-100 text-red-700'}`}>
+              {summary.revenueGrowth >= 0 ? '↑' : '↓'} {Math.abs(summary.revenueGrowth)}%
+            </div>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatCurrency(summary.revenueToday)}</div>
-            <p className={`text-xs flex items-center mt-1 ${summary.revenueGrowth >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>
-              {summary.revenueGrowth >= 0 ? <ArrowUpRight className="h-4 w-4 mr-1" /> : <ArrowDownRight className="h-4 w-4 mr-1" />}
-              {Math.abs(summary.revenueGrowth)}% so với hôm qua
-            </p>
-            {summary.shiftDifferenceToday !== 0 && (
-              <p className={`text-xs flex items-center mt-2 font-medium ${summary.shiftDifferenceToday > 0 ? 'text-blue-500' : 'text-red-500'}`}>
-                Lệch ca: {summary.shiftDifferenceToday > 0 ? '+' : ''}{formatCurrency(summary.shiftDifferenceToday)}
-              </p>
-            )}
           </CardContent>
         </Card>
-        
+
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tổng số đơn hàng</CardTitle>
+            <CardTitle className="text-sm font-medium">Doanh thu tháng</CardTitle>
+            <DollarSign className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{formatCurrency(summary.revenueMonth || 0)}</div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Đơn hàng hôm nay</CardTitle>
             <ShoppingBag className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">+{summary.ordersCountToday}</div>
-            <p className={`text-xs flex items-center mt-1 ${summary.ordersGrowth >= 0 ? 'text-emerald-500' : 'text-red-500'}`}>
-              {summary.ordersGrowth >= 0 ? <ArrowUpRight className="h-4 w-4 mr-1" /> : <ArrowDownRight className="h-4 w-4 mr-1" />}
-              {Math.abs(summary.ordersGrowth)}% so với hôm qua
-            </p>
+            <div className="text-2xl font-bold">{summary.ordersCountToday}</div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Khách trung bình/Bàn</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">3.2</div>
-            <p className="text-xs text-muted-foreground mt-1">
-              +0.5 so với tháng trước
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tỷ lệ tăng trưởng (Tháng)</CardTitle>
+            <CardTitle className="text-sm font-medium">Món bán chạy</CardTitle>
             <TrendingUp className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">+12.5%</div>
-            <p className="text-xs text-muted-foreground mt-1">
-              Tốt hơn 4% so với kỳ vọng
-            </p>
+            <div className="text-2xl font-bold break-words" title={topItems[0]?.name || 'Không có'}>
+              {topItems[0]?.name || 'Không có'}
+            </div>
           </CardContent>
         </Card>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        {/* Chart */}
-        <Card className="col-span-4">
+      {/* Middle Row: Full Width Chart */}
+      <div className="grid gap-4 md:grid-cols-1">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <div className="space-y-1">
               <CardTitle>Biểu đồ doanh thu</CardTitle>
               <CardDescription>
-                {timeRange === 'year' ? 'So sánh theo 5 năm gần nhất' : timeRange === 'month' ? 'So sánh theo 12 tháng gần nhất' : 'So sánh theo 30 ngày gần nhất'}
+                {timeRange === 'year' ? 'So sánh theo 5 năm gần nhất' : timeRange === 'quarter' ? 'So sánh theo 4 quý gần nhất' : timeRange === 'month' ? 'So sánh theo 12 tháng gần nhất' : 'So sánh theo 30 ngày gần nhất'}
               </CardDescription>
             </div>
             <Select value={timeRange} onValueChange={(val) => setTimeRange(val as string)}>
@@ -171,14 +191,15 @@ export default function DashboardPage() {
               <SelectContent>
                 <SelectItem value="day">Theo ngày</SelectItem>
                 <SelectItem value="month">Theo tháng</SelectItem>
+                <SelectItem value="quarter">Theo quý (mùa)</SelectItem>
                 <SelectItem value="year">Theo năm</SelectItem>
               </SelectContent>
             </Select>
           </CardHeader>
-          <CardContent className="pl-2">
-            <div className="h-[350px] w-full">
+          <CardContent>
+            <div className="h-[350px] w-full mt-4">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={revenueChart} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                <BarChart data={revenueChart} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e5e7eb" />
                   <XAxis 
                     dataKey="date" 
@@ -198,41 +219,102 @@ export default function DashboardPage() {
                     cursor={{ fill: '#f3f4f6' }}
                     contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
                   />
-                  <Bar dataKey="dineIn" name="Tại quán" stackId="a" fill="#10b981" radius={[0, 0, 4, 4]} />
-                  <Bar dataKey="takeaway" name="Mang về" stackId="a" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="dineIn" name="Tại quán" stackId="a" fill="#3b82f6" radius={[0, 0, 4, 4]} />
+                  <Bar dataKey="takeaway" name="Mang về" stackId="a" fill="#60a5fa" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
           </CardContent>
         </Card>
+      </div>
 
-        {/* Top Items */}
-        <Card className="col-span-3">
+      {/* Bottom Row: Top Items & Payment Methods */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+        <Card className="col-span-4">
           <CardHeader>
-            <CardTitle>Món bán chạy nhất</CardTitle>
+            <CardTitle>Top 5 món bán chạy</CardTitle>
             <CardDescription>
               Top 5 món có số lượng bán nhiều nhất trong 30 ngày qua
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-8 mt-4">
+            <div className="h-[300px] w-full mt-4">
               {topItems.length === 0 ? (
-                <div className="text-center text-muted-foreground py-8">Chưa có dữ liệu bán hàng</div>
+                <div className="flex h-full items-center justify-center text-muted-foreground">Chưa có dữ liệu bán hàng</div>
               ) : (
-                topItems.map((item: any, index: number) => (
-                  <div key={item.id} className="flex items-center">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-full border bg-slate-50 dark:bg-slate-900 font-semibold text-sm">
-                      {index + 1}
-                    </div>
-                    <div className="ml-4 space-y-1 flex-1">
-                      <p className="text-sm font-medium leading-none">{item.name}</p>
-                      <p className="text-sm text-muted-foreground">Đã bán: {item.quantity} phần</p>
-                    </div>
-                    <div className="ml-auto font-medium text-emerald-600">
-                      {formatCurrency(item.revenue)}
-                    </div>
-                  </div>
-                ))
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart layout="vertical" data={topItems} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                    <XAxis type="number" hide />
+                    <YAxis 
+                      dataKey="name" 
+                      type="category" 
+                      axisLine={false} 
+                      tickLine={false} 
+                      width={120}
+                      tick={{ fill: '#f8fafc', fontSize: 14, fontWeight: 500 }}
+                    />
+                    <RechartsTooltip 
+                      formatter={(value: any, name: any, props: any) => [`${value} phần (${formatCurrency(props.payload.revenue)})`, 'Đã bán']}
+                      cursor={{ fill: '#334155' }}
+                      contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)', backgroundColor: '#1e293b', color: '#f8fafc' }}
+                    />
+                    <Bar dataKey="quantity" fill="#3b82f6" radius={[0, 4, 4, 0]} barSize={24} />
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Payment Methods */}
+        <Card className="col-span-3">
+          <CardHeader className="flex flex-row items-center justify-between pb-2">
+            <div className="space-y-1">
+              <CardTitle>Hình thức thanh toán</CardTitle>
+              <CardDescription>
+                Tỉ trọng doanh thu theo các hình thức tính tiền
+              </CardDescription>
+            </div>
+            <Select value={paymentTimeRange} onValueChange={(val) => setPaymentTimeRange(val as string)}>
+              <SelectTrigger className="w-[150px]">
+                <SelectValue placeholder="Chọn thời gian" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="day">Theo ngày</SelectItem>
+                <SelectItem value="month">Theo tháng</SelectItem>
+                <SelectItem value="quarter">Theo quý</SelectItem>
+                <SelectItem value="year">Theo năm</SelectItem>
+              </SelectContent>
+            </Select>
+          </CardHeader>
+          <CardContent>
+            <div className="h-[300px] w-full">
+              {paymentMethods.length === 0 ? (
+                <div className="flex h-full items-center justify-center text-muted-foreground">Chưa có dữ liệu thanh toán</div>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={paymentMethods}
+                      cx="50%"
+                      cy="50%"
+                      labelLine={false}
+                      label={({ name, percent }: any) => `${name} ${((percent || 0) * 100).toFixed(0)}%`}
+                      outerRadius={100}
+                      fill="#8884d8"
+                      dataKey="value"
+                    >
+                      {paymentMethods.map((entry: any, index: number) => (
+                        <Cell key={`cell-${index}`} fill={PIE_COLORS[index % PIE_COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <RechartsTooltip 
+                      formatter={(value: any) => formatCurrency(value)}
+                      contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }}
+                    />
+                    <Legend verticalAlign="bottom" height={36}/>
+                  </PieChart>
+                </ResponsiveContainer>
               )}
             </div>
           </CardContent>

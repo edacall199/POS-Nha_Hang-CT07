@@ -147,6 +147,8 @@ export default function TablesPage() {
       toast.success('Chuyển bàn thành công');
       setMoveDialogOpen(false);
       queryClient.invalidateQueries({ queryKey: ['tables'] });
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
+      queryClient.invalidateQueries({ queryKey: ['order'] });
     },
     onError: (err: any) => {
       toast.error('Chuyển bàn thất bại', { description: err.message });
@@ -161,6 +163,8 @@ export default function TablesPage() {
       toast.success('Gộp bàn thành công');
       setMergeDialogOpen(false);
       queryClient.invalidateQueries({ queryKey: ['tables'] });
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
+      queryClient.invalidateQueries({ queryKey: ['order'] });
     },
     onError: (err: any) => {
       toast.error('Gộp bàn thất bại', { description: err.message });
@@ -169,7 +173,7 @@ export default function TablesPage() {
 
   const updateStatusMutation = useMutation({
     mutationFn: async ({ tableId, status }: { tableId: string, status: string }) => {
-      return api.put(`/tables/${tableId}/status`, { status });
+      return api.patch(`/tables/${tableId}/status`, { status });
     },
     onSuccess: () => {
       toast.success('Đã cập nhật trạng thái bàn');
@@ -258,6 +262,7 @@ export default function TablesPage() {
           <div className="flex items-center gap-4 text-sm mr-4">
             <div className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-emerald-500"></span> Trống</div>
             <div className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-rose-500"></span> Đang phục vụ</div>
+            <div className="flex items-center gap-1.5"><span className="w-3 h-3 rounded-full bg-blue-500"></span> Đang dọn</div>
           </div>
           <Button variant="outline" size="icon" onClick={() => refetch()} disabled={isRefetching}>
             <RefreshCcw className={`h-4 w-4 ${isRefetching ? 'animate-spin' : ''}`} />
@@ -286,40 +291,28 @@ export default function TablesPage() {
                 className={`overflow-hidden cursor-pointer transition-all hover:shadow-md hover:-translate-y-1 border-2 relative group ${getStatusColor(table.status)}`}
               >
                 {/* Context Actions Menu for All Tables */}
-                <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                  <DropdownMenu>
-                    <DropdownMenuTrigger 
-                      className="inline-flex items-center justify-center h-8 w-8 bg-white/50 hover:bg-white/80 dark:bg-black/20 dark:hover:bg-black/40 rounded-full focus:outline-none"
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <MoreVertical className="h-4 w-4" />
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-48">
-                      <DropdownMenuItem onClick={(e) => handleCopyQrLink(table, e as any)}>
-                        <QrCode className="mr-2 h-4 w-4" />
-                        <span>Copy Link QR Khách</span>
-                      </DropdownMenuItem>
-                      {table.status === 'occupied' && (
-                        <>
-                          <DropdownMenuItem onClick={(e) => handleOpenMoveDialog(table, e as any)}>
-                            <ArrowRightLeft className="mr-2 h-4 w-4" />
-                            <span>Chuyển sang bàn khác</span>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem onClick={(e) => handleOpenMergeDialog(table, e as any)}>
-                            <Combine className="mr-2 h-4 w-4" />
-                            <span>Gộp một bàn vào đây</span>
-                          </DropdownMenuItem>
-                        </>
-                      )}
-                      <DropdownMenuItem onClick={() => {
-                        setSelectedTableForQr(table);
-                        setQrDialogOpen(true);
-                      }}>
-                        <QrCode className="mr-2 h-4 w-4" /> Tạo mã QR
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </div>
+                {table.status === 'occupied' && (
+                  <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger 
+                        className="inline-flex items-center justify-center h-8 w-8 bg-white/50 hover:bg-white/80 dark:bg-black/20 dark:hover:bg-black/40 rounded-full focus:outline-none"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <MoreVertical className="h-4 w-4" />
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48">
+                        <DropdownMenuItem onClick={(e) => handleOpenMoveDialog(table, e as any)}>
+                          <ArrowRightLeft className="mr-2 h-4 w-4" />
+                          <span>Chuyển sang bàn khác</span>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem onClick={(e) => handleOpenMergeDialog(table, e as any)}>
+                          <Combine className="mr-2 h-4 w-4" />
+                          <span>Gộp một bàn vào đây</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </div>
+                )}
 
                 <CardContent className="p-0">
                   <div className="p-4 md:p-5 flex flex-col h-full min-h-[140px] justify-between">
@@ -386,9 +379,11 @@ export default function TablesPage() {
             </DialogDescription>
           </DialogHeader>
           <div className="py-4">
-            <Select onValueChange={(val) => setTargetMoveTableId(val as string)}>
+            <Select onValueChange={(val) => setTargetMoveTableId(val as string)} value={targetMoveTableId}>
               <SelectTrigger>
-                <SelectValue placeholder="Chọn bàn..." />
+                <SelectValue placeholder="Chọn bàn...">
+                  {targetMoveTableId ? `Bàn ${availableTables.find(t => t.id === targetMoveTableId)?.tableNumber}` : "Chọn bàn..."}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {availableTables.map(t => (
@@ -420,9 +415,11 @@ export default function TablesPage() {
             </DialogDescription>
           </DialogHeader>
           <div className="py-4">
-            <Select onValueChange={(val) => setSourceMergeTableId(val as string)}>
+            <Select onValueChange={(val) => setSourceMergeTableId(val as string)} value={sourceMergeTableId}>
               <SelectTrigger>
-                <SelectValue placeholder="Chọn bàn..." />
+                <SelectValue placeholder="Chọn bàn...">
+                  {sourceMergeTableId ? `Bàn ${occupiedTables.find(t => t.id === sourceMergeTableId)?.tableNumber}` : "Chọn bàn..."}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 {occupiedTables.filter(t => t.id !== selectedTableForMerge?.id).map(t => (

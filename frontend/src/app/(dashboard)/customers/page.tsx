@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { format } from 'date-fns';
-import { Loader2, Plus, Search, UserSquare } from 'lucide-react';
+import { Loader2, Plus, Search, UserSquare, History } from 'lucide-react';
 import { toast } from 'sonner';
 
 import api from '@/lib/axios';
@@ -35,6 +35,19 @@ export default function CustomersPage() {
   const [formData, setFormData] = useState({
     phone: '',
     fullName: ''
+  });
+  
+  const [isHistoryDialogOpen, setIsHistoryDialogOpen] = useState(false);
+  const [selectedCustomer, setSelectedCustomer] = useState<any>(null);
+
+  const { data: pointHistory = [], isLoading: isLoadingHistory } = useQuery({
+    queryKey: ['pointHistory', selectedCustomer?.id],
+    queryFn: async () => {
+      if (!selectedCustomer) return [];
+      const res: any = await api.get(`/customers/${selectedCustomer.id}/points`);
+      return res.data;
+    },
+    enabled: !!selectedCustomer && isHistoryDialogOpen,
   });
 
   const { data: customers = [], isLoading } = useQuery({
@@ -109,6 +122,7 @@ export default function CustomersPage() {
               <TableHead className="text-right">Tổng chi tiêu</TableHead>
               <TableHead className="text-center">Số đơn</TableHead>
               <TableHead className="text-right">Ngày tham gia</TableHead>
+              <TableHead className="text-right">Thao tác</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -141,8 +155,21 @@ export default function CustomersPage() {
                   <TableCell className="text-center">
                     {customer._count?.orders || 0}
                   </TableCell>
-                  <TableCell className="text-right text-slate-500">
-                    {format(new Date(customer.createdAt), 'dd/MM/yyyy')}
+                  <TableCell className="text-right">
+                    {format(new Date(customer.createdAt), 'dd/MM/yyyy HH:mm')}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => {
+                        setSelectedCustomer(customer);
+                        setIsHistoryDialogOpen(true);
+                      }}
+                    >
+                      <History className="h-4 w-4 mr-2" />
+                      Lịch sử điểm
+                    </Button>
                   </TableCell>
                 </TableRow>
               ))
@@ -188,6 +215,57 @@ export default function CustomersPage() {
               </Button>
             </DialogFooter>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={isHistoryDialogOpen} onOpenChange={setIsHistoryDialogOpen}>
+        <DialogContent className="sm:max-w-[600px] max-h-[80vh] flex flex-col">
+          <DialogHeader>
+            <DialogTitle>Lịch sử điểm thưởng</DialogTitle>
+            <DialogDescription>
+              Khách hàng: {selectedCustomer?.fullName} - {selectedCustomer?.phone}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="flex-1 overflow-y-auto">
+            {isLoadingHistory ? (
+              <div className="flex justify-center p-8">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              </div>
+            ) : pointHistory.length === 0 ? (
+              <div className="text-center p-8 text-muted-foreground">
+                Chưa có giao dịch điểm nào.
+              </div>
+            ) : (
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Thời gian</TableHead>
+                    <TableHead>Mã đơn</TableHead>
+                    <TableHead>Giao dịch</TableHead>
+                    <TableHead className="text-right">Điểm</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {pointHistory.map((tx: any) => (
+                    <TableRow key={tx.id}>
+                      <TableCell>{format(new Date(tx.createdAt), 'dd/MM/yyyy HH:mm')}</TableCell>
+                      <TableCell>{tx.order?.orderCode || '-'}</TableCell>
+                      <TableCell>
+                        {tx.points > 0 ? (
+                          <span className="text-emerald-600 font-medium">Tích điểm</span>
+                        ) : (
+                          <span className="text-red-600 font-medium">Tiêu điểm / Hoàn lại</span>
+                        )}
+                      </TableCell>
+                      <TableCell className={`text-right font-bold ${tx.points > 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                        {tx.points > 0 ? '+' : ''}{tx.points}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            )}
+          </div>
         </DialogContent>
       </Dialog>
     </div>

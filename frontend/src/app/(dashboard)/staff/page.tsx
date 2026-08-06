@@ -8,6 +8,7 @@ import { toast } from 'sonner';
 import api from '@/lib/axios';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { formatRole } from '@/lib/utils';
 import {
   Table,
   TableBody,
@@ -216,7 +217,7 @@ export default function StaffPage() {
                   </TableCell>
                   <TableCell>
                     <Badge variant="outline" className={getRoleBadge(item.role.name)}>
-                      {item.role.name}
+                      {formatRole(item.role.name)}
                     </Badge>
                   </TableCell>
                   <TableCell>{item.phone || '-'}</TableCell>
@@ -280,12 +281,16 @@ export default function StaffPage() {
               <div className="grid gap-2">
                 <Label htmlFor="role">Phân quyền (Vai trò)</Label>
                 <Select value={formData.roleId} onValueChange={(v) => setFormData({...formData, roleId: v as string})}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Chọn quyền" />
+                  <SelectTrigger className="mt-1">
+                    <SelectValue>
+                      {formData.roleId ? formatRole(roles.find((r: any) => r.id === formData.roleId)?.name) : "Chọn quyền"}
+                    </SelectValue>
                   </SelectTrigger>
                   <SelectContent>
                     {roles.map((r: any) => (
-                      <SelectItem key={r.id} value={r.id}>{r.name}</SelectItem>
+                      <SelectItem key={r.id} value={r.id}>
+                        {formatRole(r.name)}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>

@@ -1,4 +1,4 @@
-﻿<div align="center">
+<div align="center">
   <img src="https://raw.githubusercontent.com/lucide-icons/lucide/main/icons/store.svg" alt="RestoPOS Logo" width="120"/>
   <h1>🍽️ RestoPOS — Hệ thống POS Nhà hàng</h1>
   <p><strong>Dự án Đồ án Công nghệ Phần mềm</strong></p>
@@ -28,6 +28,11 @@ Dự án áp dụng kiến trúc Event-Driven kết hợp với Realtime WebSock
 ### DevOps & Tools
 - **Deployment:** Docker & Docker Compose + Nginx
 - **CI/CD:** GitHub Actions
+
+## ✨ Cập nhật mới nhất
+- **Sổ nhật ký điểm khách hàng (Loyalty Ledger):** Xem chi tiết lịch sử tích điểm, tiêu điểm và hoàn điểm minh bạch.
+- **Tối ưu hóa UI/UX:** Dọn dẹp giao diện Sơ đồ bàn, tinh chỉnh menu theo quyền hạn.
+- **Sửa lỗi Phân quyền & Điều hướng:** Ngăn chặn các tài khoản truy cập trái phép và tự động điều hướng đúng nghiệp vụ.
 
 ## ✨ Tính năng nổi bật
 

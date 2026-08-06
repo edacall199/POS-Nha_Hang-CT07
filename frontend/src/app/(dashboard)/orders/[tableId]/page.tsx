@@ -2,7 +2,7 @@
 
 import { useState, useMemo, use } from 'react';
 import { useRouter } from 'next/navigation';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
   ArrowLeft, 
   Search, 
@@ -38,6 +38,7 @@ interface MenuItem {
   description: string | null;
   categoryId: string;
   isAvailable: boolean;
+  imageUrl?: string | null;
   category?: Category;
 }
 
@@ -51,6 +52,7 @@ interface CartItem {
 export default function OrderPage(props: { params: Promise<{ tableId: string }> }) {
   const params = use(props.params);
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<string>('all');
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -134,12 +136,14 @@ export default function OrderPage(props: { params: Promise<{ tableId: string }> 
       const res = await api.post('/orders', payload);
       
       // If successful, we also send it to kitchen immediately for MVP simplicity
-      if (res.data?.id) {
-        await api.post(`/orders/${res.data.id}/send-kitchen`);
+      const orderId = res.data?.data?.id || res.data?.id;
+      if (orderId) {
+        await api.post(`/orders/${orderId}/send-kitchen`);
       }
       return res.data;
     },
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['tables'] });
       toast.success('Đã gửi order xuống bếp thành công!');
       setCart([]);
       router.push('/tables');
@@ -191,10 +195,10 @@ export default function OrderPage(props: { params: Promise<{ tableId: string }> 
         </div>
       </div>
 
-      <div className="flex flex-1 overflow-hidden">
+      <div className="flex flex-1 overflow-hidden min-h-0">
         {/* Main Menu Area */}
-        <div className="flex-1 flex flex-col bg-slate-50 dark:bg-slate-900 overflow-hidden">
-          <Tabs defaultValue="all" value={activeCategory} onValueChange={(val) => setActiveCategory(val as string)} className="flex flex-col h-full">
+        <div className="flex-1 flex flex-col bg-slate-50 dark:bg-slate-900 overflow-hidden min-h-0">
+          <Tabs defaultValue="all" value={activeCategory} onValueChange={(val) => setActiveCategory(val as string)} className="flex flex-col h-full min-h-0">
             <div className="px-4 pt-4 shrink-0">
               <ScrollArea className="w-full whitespace-nowrap pb-2">
                 <TabsList className="bg-transparent p-0 flex space-x-2">
@@ -210,7 +214,6 @@ export default function OrderPage(props: { params: Promise<{ tableId: string }> 
                       value={cat.id}
                       className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground rounded-full px-4 flex items-center gap-1.5"
                     >
-                      <span>{cat.icon}</span>
                       {cat.name}
                     </TabsTrigger>
                   ))}
@@ -218,7 +221,7 @@ export default function OrderPage(props: { params: Promise<{ tableId: string }> 
               </ScrollArea>
             </div>
             
-            <ScrollArea className="flex-1 p-4">
+            <ScrollArea className="flex-1 min-h-0 p-4">
               <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
                 {filteredItems.map(item => (
                   <Card 
@@ -228,8 +231,12 @@ export default function OrderPage(props: { params: Promise<{ tableId: string }> 
                   >
                     <CardContent className="p-4 flex flex-col h-full">
                       <div className="aspect-video w-full bg-slate-100 dark:bg-slate-800 rounded-md mb-3 flex items-center justify-center text-4xl overflow-hidden relative">
-                        {/* Placeholder for image */}
-                        {item.category?.icon || '🍽️'}
+                        {item.imageUrl ? (
+                          /* eslint-disable-next-line @next/next/no-img-element */
+                          <img src={item.imageUrl} alt={item.name} className="w-full h-full object-cover" />
+                        ) : (
+                          item.category?.icon || '🍽️'
+                        )}
                         
                         <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                           <Plus className="text-white h-8 w-8" />
@@ -256,7 +263,7 @@ export default function OrderPage(props: { params: Promise<{ tableId: string }> 
         </div>
 
         {/* Cart Sidebar */}
-        <div className="w-80 xl:w-96 bg-white dark:bg-slate-950 border-l border-slate-200 dark:border-slate-800 flex flex-col shrink-0">
+        <div className="w-80 xl:w-96 h-full min-h-0 overflow-hidden bg-white dark:bg-slate-950 border-l border-slate-200 dark:border-slate-800 flex flex-col shrink-0">
           <div className="p-4 border-b border-slate-200 dark:border-slate-800 shrink-0">
             <h2 className="font-semibold flex items-center gap-2">
               <ShoppingCart className="h-5 w-5 text-primary" />
@@ -267,7 +274,7 @@ export default function OrderPage(props: { params: Promise<{ tableId: string }> 
             </h2>
           </div>
 
-          <ScrollArea className="flex-1 p-4">
+          <ScrollArea className="flex-1 min-h-0 p-4">
             {cart.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-slate-400 space-y-4 py-12">
                 <ReceiptText className="h-12 w-12 opacity-20" />

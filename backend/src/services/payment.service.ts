@@ -100,6 +100,7 @@ export const paymentService = {
 
     // Broadcast
     io.emit('payment:confirmed', { orderId: dto.orderId, paymentId: payment.id });
+    io.emit('analytics:update', { action: 'payment_completed' });
     if (order.tableId) {
       io.emit('table:status_changed', { tableId: order.tableId, status: 'cleaning' });
       tableService.startCleaningTimer(order.tableId);

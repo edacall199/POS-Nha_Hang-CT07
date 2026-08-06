@@ -159,14 +159,6 @@ export default function LoginPage() {
               </Button>
             </form>
           </Form>
-          
-          <div className="mt-6 text-center text-sm text-slate-500">
-            <p>Tài khoản dùng thử:</p>
-            <div className="mt-2 flex justify-center gap-4">
-              <div className="rounded-md bg-slate-100 px-3 py-1 text-xs">admin@restopos.com</div>
-              <div className="rounded-md bg-slate-100 px-3 py-1 text-xs">Admin@123</div>
-            </div>
-          </div>
         </CardContent>
       </Card>
     </div>

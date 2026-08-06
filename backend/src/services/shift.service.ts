@@ -43,7 +43,7 @@ export const shiftService = {
     if (!shift) throw new AppError('Không tìm thấy ca làm việc', 404);
     if (shift.status !== 'open') throw new AppError('Ca làm việc đã được đóng', 400);
 
-    return prisma.workShift.update({
+    const updatedShift = await prisma.workShift.update({
       where: { id },
       data: {
         endTime: new Date(),
@@ -53,6 +53,13 @@ export const shiftService = {
       },
       include: { user: { select: { id: true, fullName: true, email: true } } },
     });
+
+    // Emit analytics update to refresh dashboards
+    import('../app').then(({ io }) => {
+      io.emit('analytics:update', { action: 'shift_closed' });
+    });
+
+    return updatedShift;
   },
 
   async getActiveShift(userId?: string) {

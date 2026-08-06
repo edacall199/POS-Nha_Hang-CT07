@@ -98,21 +98,21 @@ export default function InvoicePreviewPage(props: { params: Promise<{ id: string
           </div>
 
           {/* Invoice details */}
-          <div className="px-10 py-6">
+          <div className="px-10 py-6 text-slate-900 dark:text-slate-100">
             {/* Meta info */}
             <div className="grid grid-cols-2 gap-4 mb-8 text-sm">
               <div className="bg-slate-50 dark:bg-slate-800 rounded-xl p-4">
-                <p className="text-slate-400 text-xs uppercase tracking-wider mb-1">Thông tin bàn</p>
-                <p className="font-semibold text-lg">Bàn {order.table?.tableNumber || '—'}</p>
+                <p className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider mb-1">Thông tin bàn</p>
+                <p className="font-semibold text-lg text-slate-900 dark:text-white">Bàn {order.table?.tableNumber || '—'}</p>
                 {order.table?.zone?.name && (
-                  <p className="text-slate-500 text-xs">{order.table.zone.name}</p>
+                  <p className="text-slate-600 dark:text-slate-300 text-xs">{order.table.zone.name}</p>
                 )}
               </div>
               <div className="bg-slate-50 dark:bg-slate-800 rounded-xl p-4">
-                <p className="text-slate-400 text-xs uppercase tracking-wider mb-1">Thời gian</p>
-                <p className="font-semibold">{new Date(order.createdAt).toLocaleString('vi-VN')}</p>
+                <p className="text-slate-500 dark:text-slate-400 text-xs uppercase tracking-wider mb-1">Thời gian</p>
+                <p className="font-semibold text-slate-900 dark:text-white">{new Date(order.createdAt).toLocaleString('vi-VN')}</p>
                 {order.paidAt && (
-                  <p className="text-slate-500 text-xs">Thanh toán: {new Date(order.paidAt).toLocaleString('vi-VN')}</p>
+                  <p className="text-slate-600 dark:text-slate-300 text-xs">Thanh toán: {new Date(order.paidAt).toLocaleString('vi-VN')}</p>
                 )}
               </div>
             </div>
@@ -182,7 +182,7 @@ export default function InvoicePreviewPage(props: { params: Promise<{ id: string
             {/* Footer */}
             <div className="border-t border-slate-100 dark:border-slate-800 pt-6 text-center text-slate-400 text-sm">
               <p className="font-semibold text-slate-600 dark:text-slate-300 mb-1">Cảm ơn Quý Khách đã sử dụng dịch vụ!</p>
-              <p>Hẹn gặp lại tại RestoPOS 🙏</p>
+              <p>Hẹn gặp lại tại RestoPOS</p>
             </div>
           </div>
         </div>
@@ -256,18 +256,20 @@ export default function InvoicePreviewPage(props: { params: Promise<{ id: string
         <div style={{ borderBottom: '2px dashed #000', margin: '6px 0' }}></div>
         <div style={{ textAlign: 'center', marginTop: '8px' }}>
           <div style={{ fontWeight: 'bold', marginBottom: '4px' }}>CẢM ƠN QUÝ KHÁCH!</div>
-          <div>Hẹn gặp lại 🙏</div>
+          <div>Hẹn gặp lại tại RestoPOS</div>
           <div style={{ marginTop: '4px', fontSize: '10px', color: '#777' }}>Powered by RestoPOS</div>
         </div>
       </div>
 
-      {/* Print CSS */}
-      <style jsx global>{`
+      <style dangerouslySetInnerHTML={{ __html: `
         @media print {
-          @page { margin: 0; size: 80mm auto; }
-          body { margin: 0; }
+          @page {
+            margin: 0;
+            size: 80mm 297mm;
+          }
+          html, body { margin: 0 !important; padding: 0 !important; background: white !important; }
         }
-      `}</style>
+      `}} />
     </>
   );
 }

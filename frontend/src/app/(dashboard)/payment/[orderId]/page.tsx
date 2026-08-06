@@ -2,7 +2,7 @@
 
 import { use, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useQuery, useMutation } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { ArrowLeft, Banknote, CreditCard, QrCode, CheckCircle2, Loader2, FileText, SplitSquareHorizontal, Printer, User } from 'lucide-react';
 import { toast } from 'sonner';
 
@@ -26,6 +26,7 @@ import {
 export default function PaymentPage(props: { params: Promise<{ orderId: string }> }) {
   const params = use(props.params);
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'transfer' | 'card'>('cash');
   const [isSuccess, setIsSuccess] = useState(false);
   
@@ -92,6 +93,10 @@ export default function PaymentPage(props: { params: Promise<{ orderId: string }
     },
     onSuccess: () => {
       setIsSuccess(true);
+      queryClient.invalidateQueries({ queryKey: ['tables'] });
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
+      queryClient.invalidateQueries({ queryKey: ['order'] });
+      queryClient.invalidateQueries({ queryKey: ['analytics'] });
       toast.success('Thanh toán thành công!');
     },
     onError: (error: any) => {

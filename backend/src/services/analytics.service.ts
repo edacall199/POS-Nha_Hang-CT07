@@ -71,6 +71,14 @@ export const analyticsService = {
         const dateStr = d.toLocaleDateString('vi-VN', { month: '2-digit', year: 'numeric' });
         chartDataMap.set(dateStr, { date: dateStr, dineIn: 0, takeaway: 0, total: 0 });
       }
+    } else if (timeRange === 'quarter') {
+      startDate = new Date(today.getFullYear(), today.getMonth() - 9, 1); // approx last 4 quarters
+      for (let i = 3; i >= 0; i--) {
+        const d = new Date(today.getFullYear(), today.getMonth() - i * 3, 1);
+        const q = Math.floor(d.getMonth() / 3) + 1;
+        const dateStr = `Q${q}/${d.getFullYear()}`;
+        chartDataMap.set(dateStr, { date: dateStr, dineIn: 0, takeaway: 0, total: 0 });
+      }
     } else {
       // Default: day
       startDate.setDate(startDate.getDate() - 29); // Last 30 days
@@ -101,6 +109,9 @@ export const analyticsService = {
         dateStr = order.paidAt.getFullYear().toString();
       } else if (timeRange === 'month') {
         dateStr = order.paidAt.toLocaleDateString('vi-VN', { month: '2-digit', year: 'numeric' });
+      } else if (timeRange === 'quarter') {
+        const q = Math.floor(order.paidAt.getMonth() / 3) + 1;
+        dateStr = `Q${q}/${order.paidAt.getFullYear()}`;
       } else {
         dateStr = order.paidAt.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit' });
       }
@@ -145,16 +156,54 @@ export const analyticsService = {
       };
     }));
 
+    const paymentMethodsData = await prisma.payment.groupBy({
+      by: ['method'],
+      where: {
+        order: { status: 'paid', paidAt: { gte: startDate } }
+      },
+      _sum: {
+        amount: true,
+      }
+    });
+    
+    const paymentMethods = paymentMethodsData.map(p => {
+      let label = p.method;
+      if (p.method === 'cash') label = 'Tiền mặt';
+      if (p.method === 'transfer') label = 'Chuyển khoản';
+      if (p.method === 'card') label = 'Thẻ';
+      return {
+        name: label,
+        value: Number(p._sum.amount || 0)
+      };
+    });
+
+    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const monthOrders = await prisma.order.findMany({
+      where: {
+        status: 'paid',
+        paidAt: { gte: startOfMonth },
+      },
+    });
+    const revenueMonth = monthOrders.reduce((sum, order) => sum + Number(order.totalAmount), 0);
+
+    const tables = await prisma.table.findMany();
+    const totalTablesCount = tables.length;
+    const occupiedTablesCount = tables.filter(t => t.status === 'occupied').length;
+
     return {
       summary: {
         revenueToday,
+        revenueMonth,
         revenueGrowth: Math.round(revenueGrowth),
         shiftDifferenceToday: todayDifference,
         ordersCountToday,
         ordersGrowth: Math.round(ordersGrowth),
+        occupiedTablesCount,
+        totalTablesCount,
       },
       revenueChart,
       topItems,
+      paymentMethods,
     };
   }
 };

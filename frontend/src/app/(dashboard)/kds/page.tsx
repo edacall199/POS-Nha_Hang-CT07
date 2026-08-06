@@ -46,62 +46,80 @@ export default function KDSPage() {
     queryFn: async () => {
       // In a real app we'd have a specific /orders/kitchen endpoint
       // For MVP, fetch all orders and filter frontend or assume backend returns only active ones
-      const res = await api.get('/orders');
-      // Only show orders that are confirmed (sent to kitchen)
-      return res.data.filter((o: Order) => ['kitchen', 'confirmed'].includes(o.status)) as Order[];
+      const res = await api.get(`/orders?t=${new Date().getTime()}`);
+      // Only show orders that are sent to kitchen or already paid (quick-service)
+      return res.data.filter((o: Order) => ['kitchen', 'confirmed', 'paid'].includes(o.status)) as Order[];
     },
     refetchInterval: 10000, // Fallback polling every 10s
+    staleTime: 0, // ALWAYS refetch when opening KDS
+    refetchOnMount: true,
+    refetchOnWindowFocus: true, // Fix for background tab throttling
   });
 
   // Socket setup
   useEffect(() => {
     const socket = getSocket();
-    socket.connect();
-
-    socket.on('connect', () => {
+    
+    if (socket.connected) {
       setIsConnected(true);
       socket.emit('join:kitchen');
-    });
+    }
+    socket.connect();
 
-    socket.on('disconnect', () => setIsConnected(false));
-
-    socket.on('order:new', (data) => {
-      toast.info(`Có order mới từ Bàn ${data.tableNumber}`);
+    const onConnect = () => {
+      setIsConnected(true);
+      socket.emit('join:kitchen');
+      // Always refetch when reconnecting to catch any missed events while disconnected/asleep
       queryClient.invalidateQueries({ queryKey: ['kds-orders'] });
-    });
+    };
+    
+    const onDisconnect = () => setIsConnected(false);
 
-    socket.on('order:created', (data) => {
+    const onNewOrder = (data: any) => {
       toast.info(`Có order mới từ Bàn ${data.tableNumber || data.tableCode}`);
       queryClient.invalidateQueries({ queryKey: ['kds-orders'] });
-    });
+    };
 
-    socket.on('kitchen:new_ticket', (data) => {
+    const onNewTicket = (data: any) => {
       toast.info(`Bếp có phiếu gọi món mới từ Bàn ${data.tableCode || data.tableNumber}`);
       queryClient.invalidateQueries({ queryKey: ['kds-orders'] });
-    });
+    };
 
-    socket.on('order:updated', () => {
+    const onOrderUpdated = () => {
       queryClient.invalidateQueries({ queryKey: ['kds-orders'] });
-    });
+    };
+
+    socket.on('connect', onConnect);
+    socket.on('disconnect', onDisconnect);
+    socket.on('order:created', onNewOrder);
+    socket.on('kitchen:new_ticket', onNewTicket);
+    socket.on('kitchen:item_updated', onOrderUpdated);
+    socket.on('order:status_changed', onOrderUpdated);
+    socket.on('payment:confirmed', onOrderUpdated);
 
     return () => {
-      socket.off('kitchen:ticket_updated');
-      socket.off('kitchen:new_ticket');
-      socket.off('order:updated');
+      socket.off('connect', onConnect);
+      socket.off('disconnect', onDisconnect);
+      socket.off('order:created', onNewOrder);
+      socket.off('kitchen:new_ticket', onNewTicket);
+      socket.off('kitchen:item_updated', onOrderUpdated);
+      socket.off('order:status_changed', onOrderUpdated);
+      socket.off('payment:confirmed', onOrderUpdated);
+      socket.off('kitchen:ticket_updated'); // legacy cleanup just in case
     };
   }, [queryClient]);
 
   // Update Item Status Mutation
   const updateItemStatusMutation = useMutation({
-    mutationFn: async ({ itemId, status }: { itemId: string; status: string }) => {
+    mutationFn: async ({ itemId, status }: { itemId: string, status: string }) => {
       const res = await api.patch(`/orders/items/${itemId}/status`, { status });
       return res.data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['kds-orders'] });
     },
-    onError: () => {
-      toast.error('Lỗi khi cập nhật trạng thái món');
+    onError: (error: any) => {
+      toast.error('Có lỗi xảy ra', { description: error.message });
     }
   });
 
@@ -137,11 +155,31 @@ export default function KDSPage() {
     });
   });
 
-  // Sort by created time (oldest first)
-  const sortByTime = (a: any, b: any) => new Date(a.order.createdAt).getTime() - new Date(b.order.createdAt).getTime();
-  pendingItems.sort(sortByTime);
-  preparingItems.sort(sortByTime);
-  readyItems.sort(sortByTime);
+  // Sort by created time (oldest first for pending/preparing)
+  const sortByTimeOldest = (a: any, b: any) => {
+    const timeA = new Date(a.order.createdAt).getTime();
+    const timeB = new Date(b.order.createdAt).getTime();
+    if (isNaN(timeA) || isNaN(timeB)) return 0;
+    return timeA - timeB;
+  };
+  pendingItems.sort(sortByTimeOldest);
+  preparingItems.sort(sortByTimeOldest);
+  
+  // Filter ready items for last 7 days and sort newest first
+  const sevenDaysAgo = new Date();
+  sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  
+  let recentReadyItems = readyItems.filter(item => {
+    const time = new Date(item.order.createdAt).getTime();
+    if (isNaN(time)) return false;
+    return time >= sevenDaysAgo.getTime();
+  });
+  recentReadyItems.sort((a: any, b: any) => {
+    const timeA = new Date(a.order.createdAt).getTime();
+    const timeB = new Date(b.order.createdAt).getTime();
+    if (isNaN(timeA) || isNaN(timeB)) return 0;
+    return timeB - timeA;
+  });
 
   const Column = ({ title, icon: Icon, items, colorClass }: any) => (
     <div className="flex flex-col h-full bg-slate-100/50 dark:bg-slate-900/50 rounded-xl border border-slate-200 dark:border-slate-800 overflow-hidden">
@@ -218,6 +256,16 @@ export default function KDSPage() {
 
   return (
     <div className="flex flex-col h-full space-y-6">
+      {/* DEBUG VIEW */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="text-xs bg-slate-900 text-green-400 p-2 overflow-auto max-h-32">
+          Debug: orders={orders?.length} | 
+          pending={pendingItems.length} | 
+          preparing={preparingItems.length} | 
+          ready={readyItems.length} |
+          first order={(orders?.[0] as any)?.orderCode} status={orders?.[0]?.status} items={orders?.[0]?.items?.map((i:any)=>i.status).join(',')}
+        </div>
+      )}
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-2xl font-bold tracking-tight">Màn hình Bếp (KDS)</h1>
@@ -247,7 +295,7 @@ export default function KDSPage() {
         <Column 
           title="Đã xong" 
           icon={CheckCircle2} 
-          items={readyItems} 
+          items={recentReadyItems} 
           colorClass="bg-emerald-50 dark:bg-emerald-900/20 text-emerald-800 dark:text-emerald-400"
         />
       </div>

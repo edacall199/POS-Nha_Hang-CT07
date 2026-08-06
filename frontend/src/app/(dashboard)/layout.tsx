@@ -22,6 +22,7 @@ import {
 import { toast } from 'sonner';
 
 import { useAuthStore } from '@/stores/auth.store';
+import { formatRole } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
@@ -59,7 +60,7 @@ export default function DashboardLayout({
         { href: '/', roles: ['ADMIN', 'MANAGER'] },
         { href: '/tables', roles: ['ADMIN', 'MANAGER', 'CASHIER', 'WAITER'] },
         { href: '/kds', roles: ['ADMIN', 'MANAGER', 'KITCHEN'] },
-        { href: '/menu', roles: ['ADMIN', 'MANAGER'] },
+        { href: '/menu', roles: ['ADMIN', 'MANAGER', 'CASHIER', 'WAITER', 'KITCHEN'] },
         { href: '/inventory', roles: ['ADMIN', 'MANAGER'] },
         { href: '/customers', roles: ['ADMIN', 'MANAGER', 'CASHIER'] },
         { href: '/staff', roles: ['ADMIN', 'MANAGER'] },
@@ -71,7 +72,9 @@ export default function DashboardLayout({
       const allowedItem = menuItems.find(item => item.href === '/' ? pathname === '/' : pathname.startsWith(item.href));
       if (allowedItem && !allowedItem.roles.includes(user.role)) {
         toast.error('Truy cập bị từ chối', { description: 'Bạn không có quyền xem trang này.' });
-        router.push('/tables'); // fallback
+        if (user.role === 'KITCHEN') router.push('/kds');
+        else if (user.role === 'ADMIN' || user.role === 'MANAGER') router.push('/');
+        else router.push('/tables');
       }
     }
   }, [pathname, isMounted, isAuthenticated, user, router]);
@@ -91,7 +94,7 @@ export default function DashboardLayout({
     { href: '/', icon: LayoutDashboard, label: 'Tổng quan', roles: ['ADMIN', 'MANAGER'] },
     { href: '/tables', icon: LayoutGrid, label: 'Sơ đồ bàn', roles: ['ADMIN', 'MANAGER', 'CASHIER', 'WAITER'] },
     { href: '/kds', icon: ChefHat, label: 'Bếp (KDS)', roles: ['ADMIN', 'MANAGER', 'KITCHEN'] },
-    { href: '/menu', icon: UtensilsCrossed, label: 'Thực đơn', roles: ['ADMIN', 'MANAGER'] },
+    { href: '/menu', icon: UtensilsCrossed, label: 'Thực đơn', roles: ['ADMIN', 'MANAGER', 'CASHIER', 'WAITER', 'KITCHEN'] },
     { href: '/inventory', icon: Package, label: 'Kho hàng', roles: ['ADMIN', 'MANAGER'] },
     { href: '/customers', icon: UserSquare, label: 'Khách hàng', roles: ['ADMIN', 'MANAGER', 'CASHIER'] },
     { href: '/staff', icon: Users, label: 'Nhân sự', roles: ['ADMIN', 'MANAGER'] },
@@ -104,7 +107,7 @@ export default function DashboardLayout({
   const filteredMenuItems = menuItems.filter(item => item.roles.includes(user.role));
 
   return (
-    <div className="min-h-screen bg-slate-50 flex dark:bg-slate-900 transition-colors duration-300">
+    <div className="h-screen overflow-hidden bg-slate-50 flex dark:bg-slate-900 transition-colors duration-300">
       {/* Sidebar */}
       <aside
         className={cn(
@@ -159,7 +162,7 @@ export default function DashboardLayout({
             </div>
             <div className="flex flex-col">
               <span className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate w-32">{user.fullName}</span>
-              <span className="text-xs text-slate-500 dark:text-slate-400">{user.role}</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400">{formatRole(user.role)}</span>
             </div>
           </div>
           <Button variant="outline" className="w-full justify-start text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/30 border-slate-200 dark:border-slate-800" onClick={handleLogout}>

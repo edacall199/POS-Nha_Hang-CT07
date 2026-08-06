@@ -6,6 +6,7 @@ export class AppError extends Error {
 
   constructor(message: string, statusCode: number) {
     super(message);
+    this.name = 'AppError';
     this.statusCode = statusCode;
     this.isOperational = true;
     Error.captureStackTrace(this, this.constructor);
@@ -18,8 +19,8 @@ export const errorHandler = (
   res: Response,
   _next: NextFunction,
 ): void => {
-  if (err instanceof AppError) {
-    res.status(err.statusCode).json({
+  if (err instanceof AppError || (err as any).isOperational) {
+    res.status((err as any).statusCode || 400).json({
       success: false,
       message: err.message,
     });

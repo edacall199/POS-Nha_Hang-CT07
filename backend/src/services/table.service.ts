@@ -52,7 +52,7 @@ export const tableService = {
       include: { 
         zone: true,
         orders: {
-          where: { status: { in: ['pending', 'confirmed', 'preparing', 'ready', 'served'] } },
+          where: { status: { in: ['pending', 'confirmed', 'kitchen', 'preparing', 'ready', 'served'] } },
           take: 1
         }
       },

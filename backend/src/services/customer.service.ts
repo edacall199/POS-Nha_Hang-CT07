@@ -67,5 +67,17 @@ export const customerService = {
       },
       orderBy: { createdAt: 'desc' }
     });
+  },
+
+  async getPointTransactions(customerId: string) {
+    return prisma.pointTransaction.findMany({
+      where: { customerId },
+      include: {
+        order: {
+          select: { orderCode: true }
+        }
+      },
+      orderBy: { createdAt: 'desc' }
+    });
   }
 };

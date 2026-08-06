@@ -148,13 +148,9 @@ export const orderService = {
       where: { menuItemId: { in: menuItemIds } }
     });
 
-    // Mark order as kitchen and items as preparing, and deduct inventory
+    // Mark order as kitchen, items remain pending (Chờ chế biến), and deduct inventory
     await prisma.$transaction(async (tx) => {
       await tx.order.update({ where: { id: orderId }, data: { status: 'kitchen' } });
-      await tx.orderItem.updateMany({
-        where: { orderId, status: 'pending' },
-        data: { status: 'preparing' },
-      });
 
       // Deduct inventory based on recipes
       const orderUser = pendingItems[0]?.order?.userId; // fallback user for logs
@@ -293,9 +289,22 @@ export const orderService = {
             },
           });
         }
+
+        if (order.tableId) {
+          await tx.table.update({ where: { id: order.tableId }, data: { status: 'cleaning' } });
+        }
       });
     } else {
-      await prisma.order.update({ where: { id }, data: { status } });
+      await prisma.$transaction(async (tx) => {
+        await tx.order.update({ where: { id }, data: { status } });
+        if (status === 'cancelled' && order.tableId) {
+          await tx.table.update({ where: { id: order.tableId }, data: { status: 'cleaning' } });
+        }
+      });
+    }
+
+    if (status === 'cancelled' && order.tableId) {
+      io.emit('table:status_changed', { tableId: order.tableId, status: 'cleaning' });
     }
 
     io.emit('order:status_changed', { orderId: id, status });
