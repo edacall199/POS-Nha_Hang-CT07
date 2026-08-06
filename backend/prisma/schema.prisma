@@ -178,6 +178,7 @@ model Order {
   customer       Customer?   @relation(fields: [customerId], references: [id])
   items          OrderItem[]
   payment        Payment?
+  pointTransactions PointTransaction[]
 
   @@map("orders")
 }
@@ -269,6 +270,31 @@ model Customer {
   createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz
 
   orders      Order[]
+  pointTransactions PointTransaction[]
 
   @@map("customers")
+}
+
+model StoreConfig {
+  id        String   @id @default("default")
+  taxRate   Decimal  @default(0.08) @map("tax_rate") @db.Decimal(5,4)
+  storeName String   @default("RestoPOS") @map("store_name") @db.VarChar(200)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz
+
+  @@map("store_config")
+}
+
+model PointTransaction {
+  id         String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  customerId String   @map("customer_id") @db.Uuid
+  orderId    String?  @map("order_id") @db.Uuid
+  type       String   @db.VarChar(20)
+  points     Int      @db.Integer
+  note       String?  @db.VarChar(300)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz
+
+  customer   Customer @relation(fields: [customerId], references: [id])
+  order      Order?   @relation(fields: [orderId], references: [id])
+
+  @@map("point_transactions")
 }

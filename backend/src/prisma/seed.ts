@@ -9,6 +9,14 @@ const SALT_ROUNDS = 10;
 async function main() {
   console.log('🌱 Bắt đầu seed dữ liệu...');
 
+  // 0. Seed StoreConfig
+  await prisma.storeConfig.upsert({
+    where: { id: 'default' },
+    update: {},
+    create: { id: 'default', taxRate: 0.08, storeName: 'RestoPOS Demo' },
+  });
+  console.log(`✅ Đã seed StoreConfig`);
+
   // 1. Seed Roles
   const roleNames = ['ADMIN', 'MANAGER', 'CASHIER', 'WAITER', 'KITCHEN'];
   const roleDescriptions: Record<string, string> = {

@@ -1,4 +1,5 @@
 import { prisma } from '../lib/prisma';
+import { getTaxRate } from './config.service';
 import { AppError } from '../middleware/error.middleware';
 import { io } from '../app';
 
@@ -66,7 +67,8 @@ export const publicService = {
     );
 
     const subtotal = itemsWithPrice.reduce((sum, i) => sum + i.subtotal, 0);
-    const taxAmount = Math.round(subtotal * 0.08); // 8% VAT
+    const taxRate = await getTaxRate();
+    const taxAmount = Math.round(subtotal * taxRate); // 8% VAT
     const totalAmount = subtotal + taxAmount;
 
     // Generate Order Code

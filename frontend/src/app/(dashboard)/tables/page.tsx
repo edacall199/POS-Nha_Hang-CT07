@@ -49,7 +49,7 @@ function CleaningCountdown({ endTime }: { endTime: number }) {
   const mins = Math.floor(timeLeft / 60000);
   const secs = Math.floor((timeLeft % 60000) / 1000);
   
-  if (timeLeft <= 0) return <span>Đang dọn xong...</span>;
+  if (timeLeft <= 0) return <span className="text-red-500 font-bold animate-pulse">⚠ Quá hạn dọn!</span>;
   return <span>{mins}:{secs.toString().padStart(2, '0')}</span>;
 }
 
@@ -109,11 +109,13 @@ export default function TablesPage() {
 
     socket.on('table:status_changed', handleUpdate);
     socket.on('table:updated', handleUpdate);
+    socket.on('table:cleaning_overtime', handleUpdate);
     socket.on('order:created', handleUpdate);
 
     return () => {
       socket.off('table:status_changed', handleUpdate);
       socket.off('table:updated', handleUpdate);
+      socket.off('table:cleaning_overtime', handleUpdate);
       socket.off('order:created', handleUpdate);
     };
   }, [queryClient]);
@@ -162,6 +164,19 @@ export default function TablesPage() {
     },
     onError: (err: any) => {
       toast.error('Gộp bàn thất bại', { description: err.message });
+    }
+  });
+
+  const updateStatusMutation = useMutation({
+    mutationFn: async ({ tableId, status }: { tableId: string, status: string }) => {
+      return api.put(`/tables/${tableId}/status`, { status });
+    },
+    onSuccess: () => {
+      toast.success('Đã cập nhật trạng thái bàn');
+      queryClient.invalidateQueries({ queryKey: ['tables'] });
+    },
+    onError: (err: any) => {
+      toast.error('Lỗi khi cập nhật trạng thái', { description: err.message });
     }
   });
 
@@ -323,6 +338,19 @@ export default function TablesPage() {
                           <Clock className="w-3 h-3 mr-1" />
                           <CleaningCountdown endTime={table.cleaningEndTime} />
                         </span>
+                      )}
+                      {table.status === 'cleaning' && (
+                        <Button 
+                          size="sm" 
+                          className="mt-2 bg-emerald-500 hover:bg-emerald-600 text-white h-7 text-xs w-fit"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            updateStatusMutation.mutate({ tableId: table.id, status: 'available' });
+                          }}
+                          disabled={updateStatusMutation.isPending}
+                        >
+                          ✓ Dọn xong
+                        </Button>
                       )}
                       {table.status === 'occupied' && (table.updatedAt || table.createdAt) && (
                         <span className="flex items-center text-xs opacity-80">

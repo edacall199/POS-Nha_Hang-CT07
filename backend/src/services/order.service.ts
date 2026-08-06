@@ -1,4 +1,5 @@
 import { prisma } from '../lib/prisma';
+import { getTaxRate } from './config.service';
 import { AppError } from '../middleware/error.middleware';
 import { io } from '../app';
 import type { CreateOrderDto } from '../validators/order.validator';
@@ -89,7 +90,8 @@ export const orderService = {
     );
 
     const subtotal = itemsWithPrice.reduce((sum, i) => sum + i.subtotal, 0);
-    const taxAmount = Math.round(subtotal * 0.08);
+    const taxRate = await getTaxRate();
+    const taxAmount = Math.round(subtotal * taxRate);
     const totalAmount = subtotal + taxAmount;
 
     const order = await prisma.$transaction(async (tx) => {
@@ -161,10 +163,22 @@ export const orderService = {
         for (const recipe of itemRecipes) {
           const deductAmount = Number(recipe.quantity) * item.quantity;
           
-          await tx.ingredient.update({
-            where: { id: recipe.ingredientId },
-            data: { stockQuantity: { decrement: deductAmount } }
-          });
+          // Conditional update: only deduct if sufficient stock
+          const result = await tx.$executeRaw`
+            UPDATE ingredients 
+            SET stock_quantity = stock_quantity - ${deductAmount}, 
+                updated_at = NOW()
+            WHERE id = ${recipe.ingredientId}::uuid 
+              AND stock_quantity >= ${deductAmount}
+          `;
+          
+          if (result === 0) {
+            const ingredient = await tx.ingredient.findUnique({ where: { id: recipe.ingredientId } });
+            throw new AppError(
+              `Không đủ tồn kho nguyên liệu "${ingredient?.name ?? recipe.ingredientId}" (cần ${deductAmount}, còn ${ingredient?.stockQuantity ?? 0})`,
+              400
+            );
+          }
 
           await tx.inventoryLog.create({
             data: {
@@ -175,6 +189,16 @@ export const orderService = {
               userId: orderUser,
             }
           });
+
+          // Check low stock warning
+          const updatedIngredient = await tx.ingredient.findUnique({ where: { id: recipe.ingredientId } });
+          if (updatedIngredient && Number(updatedIngredient.stockQuantity) <= Number(updatedIngredient.minQuantity)) {
+            io.emit('inventory:low_stock', {
+              ingredientId: updatedIngredient.id,
+              name: updatedIngredient.name,
+              stock: updatedIngredient.stockQuantity
+            });
+          }
         }
       }
     });
@@ -211,42 +235,7 @@ export const orderService = {
         include: { order: { include: { table: true } }, menuItem: true },
       });
 
-      // Auto-deduct inventory when item is marked as done
-      if (status === 'done' && currentItem.status !== 'done') {
-        const recipes = await tx.recipe.findMany({
-          where: { menuItemId: item.menuItemId },
-        });
-
-        for (const recipe of recipes) {
-          const deduction = Number(recipe.quantity) * item.quantity;
-          
-          const updatedIngredient = await tx.ingredient.update({
-            where: { id: recipe.ingredientId },
-            data: {
-              stockQuantity: { decrement: deduction }
-            }
-          });
-
-          await tx.inventoryLog.create({
-            data: {
-              ingredientId: recipe.ingredientId,
-              changeQuantity: -deduction,
-              reason: `Bán ${item.quantity}x ${item.menuItem.name} (ĐH: ${item.order.orderCode})`,
-              referenceId: item.orderId,
-              userId: item.order.userId, // Assume the person who created the order or a system bot
-            }
-          });
-
-          // Check if low stock to emit warning
-          if (Number(updatedIngredient.stockQuantity) <= Number(updatedIngredient.minQuantity)) {
-            io.emit('inventory:low_stock', {
-              ingredientId: updatedIngredient.id,
-              name: updatedIngredient.name,
-              stock: updatedIngredient.stockQuantity
-            });
-          }
-        }
-      }
+      // Inventory was already deducted in sendToKitchen — no double deduction
 
       io.emit('kitchen:item_updated', {
         itemId: item.id,
@@ -261,11 +250,55 @@ export const orderService = {
   },
 
   async updateStatus(id: string, status: string) {
-    const order = await prisma.order.update({
+    const order = await prisma.order.findUnique({
       where: { id },
-      data: { status },
+      include: { customer: true },
     });
-    io.emit('order:status_changed', { orderId: order.id, status: order.status });
-    return order;
+    if (!order) throw new AppError('Không tìm thấy đơn hàng', 404);
+
+    // Refund points if cancelling a paid order with customer
+    if (status === 'cancelled' && order.status === 'paid' && order.customerId) {
+      const pointsToRefund = order.pointsUsed - order.pointsEarned; // positive = need to give back
+      
+      await prisma.$transaction(async (tx) => {
+        await tx.order.update({ where: { id }, data: { status } });
+        
+        if (pointsToRefund !== 0) {
+          await tx.customer.update({
+            where: { id: order.customerId! },
+            data: { points: { increment: pointsToRefund } },
+          });
+        }
+
+        // Log refund in point_transactions ledger
+        if (order.pointsEarned > 0) {
+          await tx.pointTransaction.create({
+            data: {
+              customerId: order.customerId!,
+              orderId: id,
+              type: 'refund',
+              points: -order.pointsEarned,
+              note: `Hoàn trừ điểm tích lũy do hủy đơn ${order.orderCode}`,
+            },
+          });
+        }
+        if (order.pointsUsed > 0) {
+          await tx.pointTransaction.create({
+            data: {
+              customerId: order.customerId!,
+              orderId: id,
+              type: 'refund',
+              points: order.pointsUsed,
+              note: `Hoàn trả điểm đã dùng do hủy đơn ${order.orderCode}`,
+            },
+          });
+        }
+      });
+    } else {
+      await prisma.order.update({ where: { id }, data: { status } });
+    }
+
+    io.emit('order:status_changed', { orderId: id, status });
+    return { id, status };
   },
 };

@@ -1,4 +1,5 @@
 import { prisma } from '../lib/prisma';
+import { getTaxRate } from './config.service';
 import { AppError } from '../middleware/error.middleware';
 import { io } from '../app';
 
@@ -21,14 +22,17 @@ export const tableService = {
       try {
         const table = await prisma.table.findUnique({ where: { id: tableId } });
         if (table?.status === 'cleaning') {
-          await prisma.table.update({ where: { id: tableId }, data: { status: 'available' } });
-          io.emit('table:status_changed', { tableId, status: 'available' });
+          // Only emit warning, do NOT auto-change status
+          io.emit('table:cleaning_overtime', {
+            tableId,
+            tableNumber: table.tableNumber,
+            message: 'Bàn đã quá thời gian dọn dẹp, cần nhân viên xác nhận!'
+          });
         }
       } catch (e) {
-        console.error('Error auto-available table:', e);
+        console.error('Error checking cleaning table:', e);
       }
-      cleaningTimers.delete(tableId);
-      cleaningEndTimes.delete(tableId);
+      // Keep timer references so UI still shows the overtime state
     }, DURATION);
     
     cleaningTimers.set(tableId, timer);
@@ -165,6 +169,7 @@ export const tableService = {
       throw new AppError('Không thể gộp đơn hàng đã thanh toán', 400);
     }
 
+    const taxRate = await getTaxRate();
     const result = await prisma.$transaction(async (tx) => {
       // Move all items from source order to primary order
       await tx.orderItem.updateMany({
@@ -175,7 +180,7 @@ export const tableService = {
       // Recalculate primary order total
       const allItems = await tx.orderItem.findMany({ where: { orderId: primaryOrderId } });
       const newSubtotal = allItems.reduce((sum, i) => sum + Number(i.subtotal), 0);
-      const newTax = Math.round(newSubtotal * 0.08);
+      const newTax = Math.round(newSubtotal * taxRate);
 
       const updated = await tx.order.update({
         where: { id: primaryOrderId },

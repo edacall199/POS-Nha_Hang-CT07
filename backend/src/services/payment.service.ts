@@ -1,4 +1,5 @@
 import { prisma } from '../lib/prisma';
+import { getTaxRate } from './config.service';
 import { AppError } from '../middleware/error.middleware';
 import { io } from '../app';
 import type { CreatePaymentDto, SplitBillDto } from '../validators/payment.validator';
@@ -66,6 +67,30 @@ export const paymentService = {
         });
       }
 
+      // Record point transactions in ledger
+      if (dto.customerId && pointsEarned > 0) {
+        await tx.pointTransaction.create({
+          data: {
+            customerId: dto.customerId,
+            orderId: dto.orderId,
+            type: 'earn',
+            points: pointsEarned,
+            note: `Tích điểm từ đơn hàng (${amount.toLocaleString('vi-VN')}đ)`,
+          },
+        });
+      }
+      if (dto.customerId && (dto.pointsUsed || 0) > 0) {
+        await tx.pointTransaction.create({
+          data: {
+            customerId: dto.customerId,
+            orderId: dto.orderId,
+            type: 'redeem',
+            points: -(dto.pointsUsed || 0),
+            note: `Đổi điểm giảm giá đơn hàng`,
+          },
+        });
+      }
+
       if (order.tableId) {
         await tx.table.update({ where: { id: order.tableId }, data: { status: 'cleaning' } });
       }
@@ -100,6 +125,7 @@ export const paymentService = {
       throw new AppError('Không thể tách toàn bộ món sang hóa đơn mới', 400);
     }
 
+    const taxRate = await getTaxRate();
     return prisma.$transaction(async (tx) => {
       // 1. Create a new child order
       const newOrder = await tx.order.create({
@@ -125,7 +151,7 @@ export const paymentService = {
       // 3. Recalculate Original Order
       const remainingItems = await tx.orderItem.findMany({ where: { orderId: order.id } });
       const origSubtotal = remainingItems.reduce((sum, i) => sum + Number(i.subtotal), 0);
-      const origTax = Math.round(origSubtotal * 0.08);
+      const origTax = Math.round(origSubtotal * taxRate);
       await tx.order.update({
         where: { id: order.id },
         data: { subtotal: origSubtotal, taxAmount: origTax, totalAmount: origSubtotal + origTax }
@@ -134,7 +160,7 @@ export const paymentService = {
       // 4. Recalculate New Order
       const splitItems = await tx.orderItem.findMany({ where: { orderId: newOrder.id } });
       const newSubtotal = splitItems.reduce((sum, i) => sum + Number(i.subtotal), 0);
-      const newTax = Math.round(newSubtotal * 0.08);
+      const newTax = Math.round(newSubtotal * taxRate);
       await tx.order.update({
         where: { id: newOrder.id },
         data: { subtotal: newSubtotal, taxAmount: newTax, totalAmount: newSubtotal + newTax }
